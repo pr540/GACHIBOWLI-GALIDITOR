@@ -652,7 +652,7 @@ export default function GroupPage({ params }: { params: Promise<{ groupId: strin
                     </div>
 
                     <div className="text-xs text-[--color-muted] mt-0.5 flex flex-wrap items-center gap-2">
-                      <span>{formattedDate}</span>
+                      <span suppressHydrationWarning>{formattedDate}</span>
                       <span>·</span>
                       {e.payers && e.payers.length > 1 ? (
                         <span>
@@ -694,7 +694,7 @@ export default function GroupPage({ params }: { params: Promise<{ groupId: strin
                     {splitBadge === "EQUAL" ? `1/${partCount} each (₹${(parseFloat(e.amount) / partCount).toFixed(2)})` : "Custom split shares"}
                   </span>
                   {/* User requirement: Show "last edited by <name> at <time>" on every expense */}
-                  <span className="text-[11px] text-[--color-brass]/80 font-mono">
+                  <span suppressHydrationWarning className="text-[11px] text-[--color-brass]/80 font-mono">
                     Last edited by {editor} at {editTime}
                   </span>
                 </div>

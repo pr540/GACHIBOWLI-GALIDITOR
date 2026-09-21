@@ -48,3 +48,19 @@ Every member has full access to everything: add/edit/delete expenses, add/edit/r
 - Implemented full expense editing and deletion with prominent `"Last edited by <name> at <time>"` metadata on each expense card.
 - Implemented inline group renaming.
 - Verified builds and committed changes.
+
+---
+
+## Prompt 4
+**User Request:**
+```text
+Build add/edit/delete expense: title, amount, date, paid by (one or many), participants, split type: equal / exact amount / percentage / shares. Validate: no negative amounts, splits must add up exactly, round to 2 decimals. Add expense history with search and filter by member/date, with confirm on delete. Commit.
+```
+**Actions Taken:**
+- Implemented comprehensive Add/Edit/Delete expense system supporting title, amount, date, single or multiple payers, and four split types: Equal, Exact Amount, Percentage, and Shares.
+- Built real-time mathematical validation: prevents negative numbers, enforces that splits and multiple payers add up exactly to the total amount, and rounds all amounts to 2 decimal places.
+- Added Expense History search (by title and payer) and dynamic filters by member and by date range (All Time, Today, Last 7 Days, This Month).
+- Added modal confirmation before deleting an expense with automatic balance recalculation.
+- Verified test suite and monorepo builds.
+- Committed all changes to git repository.
+

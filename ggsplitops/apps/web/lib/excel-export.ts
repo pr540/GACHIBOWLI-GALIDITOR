@@ -16,8 +16,10 @@ export interface ExportExpense {
   currency: string;
   payerName: string;
   payerId: string;
+  payers?: { memberId: string; displayName: string; amount: string }[];
+  splitMethod?: "EQUAL" | "EXACT" | "PERCENTAGE" | "SHARES";
   spentAt?: string;
-  participants: { memberId: string; displayName: string }[];
+  participants: { memberId: string; displayName: string; value?: string; amount?: string }[];
   lastEditedByName?: string;
   lastEditedAt?: string;
 }

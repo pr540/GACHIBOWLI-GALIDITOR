@@ -58,6 +58,10 @@ export default function GroupPage({ params }: { params: Promise<{ groupId: strin
 
   // Delete Confirmation Modal State
   const [deleteExpenseTarget, setDeleteExpenseTarget] = useState<ExportExpense | null>(null);
+  const [isClearHistoryModalOpen, setIsClearHistoryModalOpen] = useState(false);
+
+  // Personal View scoping (when enabled, filters to active member's activities)
+  const [personalOnly, setPersonalOnly] = useState(false);
 
   // Search & Filter state for Expense History
   const [searchQuery, setSearchQuery] = useState("");
@@ -217,6 +221,13 @@ export default function GroupPage({ params }: { params: Promise<{ groupId: strin
   // Expense History Filter & Search
   const filteredExpenses = useMemo(() => {
     return expensesList.filter((e) => {
+      // 0. Personal View Scoping
+      if (personalOnly && currentUser?.id) {
+        const isPayer = e.payerId === currentUser.id || e.payers?.some((p) => p.memberId === currentUser.id);
+        const isPart = e.participants.some((p) => p.memberId === currentUser.id);
+        if (!isPayer && !isPart) return false;
+      }
+
       // 1. Text Search (title, payer, notes)
       if (searchQuery.trim()) {
         const q = searchQuery.toLowerCase();
@@ -417,7 +428,12 @@ export default function GroupPage({ params }: { params: Promise<{ groupId: strin
         <MonthDashboard
           expenses={expensesList}
           members={members}
+          personalOnly={personalOnly}
+          onTogglePersonalOnly={setPersonalOnly}
           onSelectMonthFilter={() => setDateFilter("MONTH")}
+          onSelectDateFilter={(dateStr) => {
+            setSearchQuery(dateStr);
+          }}
         />
       </div>
 
@@ -504,6 +520,15 @@ export default function GroupPage({ params }: { params: Promise<{ groupId: strin
           </div>
 
           <div className="flex items-center gap-2">
+            <button
+              onClick={() => setIsClearHistoryModalOpen(true)}
+              type="button"
+              disabled={expensesList.length === 0}
+              className="text-xs text-[--color-debit] hover:underline font-medium disabled:opacity-40"
+            >
+              🗑 Clear History
+            </button>
+            <span className="text-[--color-line-bright]">|</span>
             <button
               onClick={() => {
                 setModalExpense(null);
@@ -726,6 +751,40 @@ export default function GroupPage({ params }: { params: Promise<{ groupId: strin
                 className="bg-[--color-debit] px-4 py-1.5 rounded text-xs font-semibold text-white transition-opacity hover:opacity-90"
               >
                 Confirm Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Confirm Clear All History Modal */}
+      {isClearHistoryModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-xs">
+          <div className="w-full max-w-sm rounded-[--radius-lg] border border-[--color-debit-dim] bg-[--color-surface] p-5 shadow-2xl space-y-4">
+            <div>
+              <h3 className="text-base font-semibold text-[--color-text]">Clear All Expense History?</h3>
+              <p className="text-xs text-[--color-muted] mt-1">
+                Are you sure you want to remove all {expensesList.length} expenses? All member balances will be reset to zero.
+              </p>
+            </div>
+            <div className="flex justify-end gap-2 pt-2">
+              <button
+                type="button"
+                onClick={() => setIsClearHistoryModalOpen(false)}
+                className="px-3 py-1.5 rounded text-xs text-[--color-muted] hover:text-[--color-text]"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setExpensesList([]);
+                  setIsClearHistoryModalOpen(false);
+                  refresh();
+                }}
+                className="bg-[--color-debit] px-4 py-1.5 rounded text-xs font-semibold text-white transition-opacity hover:opacity-90"
+              >
+                Yes, Clear All
               </button>
             </div>
           </div>

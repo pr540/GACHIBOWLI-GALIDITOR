@@ -68,26 +68,8 @@ export default function GroupPage({ params }: { params: Promise<{ groupId: strin
   const [selectedMemberFilter, setSelectedMemberFilter] = useState("ALL");
   const [dateFilter, setDateFilter] = useState<"ALL" | "TODAY" | "WEEK" | "MONTH">("ALL");
 
-  // Expenses state
-  const [expensesList, setExpensesList] = useState<ExportExpense[]>([
-    {
-      id: "sample-exp-1",
-      description: "Team Lunch at Gachibowli",
-      amount: "3750.00",
-      currency: "INR",
-      payerName: "Zubair",
-      payerId: "mem-zubair",
-      splitMethod: "EQUAL",
-      spentAt: new Date(Date.now() - 3600000).toISOString(),
-      participants: DEFAULT_SPLITOPS_MEMBERS.map((m) => ({
-        memberId: m.id,
-        displayName: m.displayName,
-        amount: (3750 / DEFAULT_SPLITOPS_MEMBERS.length).toFixed(2),
-      })),
-      lastEditedByName: "Zubair",
-      lastEditedAt: new Date(Date.now() - 3600000).toISOString(),
-    },
-  ]);
+  // Expenses state (starts empty; expenses appear only when a user adds a split)
+  const [expensesList, setExpensesList] = useState<ExportExpense[]>([]);
 
   const groupQuery = useQuery({
     queryKey: ["group", groupId],

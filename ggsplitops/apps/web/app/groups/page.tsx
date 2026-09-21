@@ -208,7 +208,137 @@ export default function GroupsPage() {
             </Link>
           </div>
 
-          {/* User created groups list */}
+          {/* Featured Default SplitOps Group Card */}
+          <div className="relative group mb-4">
+            <Link
+              href="/groups/splitops"
+              className="block rounded-[--radius-lg] border border-[--color-brass]/50 hover:border-[--color-brass] bg-[--color-surface] p-5 shadow-sm transition-all hover:shadow-md hover:-translate-y-0.5"
+            >
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex items-start gap-3.5">
+                  <div className="w-12 h-12 rounded-[--radius] bg-[--color-brass-dim]/40 border border-[--color-brass]/40 flex items-center justify-center text-xl shrink-0">
+                    💰
+                  </div>
+
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="font-bold text-base sm:text-lg text-[--color-text] tracking-tight">
+                        SplitOps (Our GG Group)
+                      </span>
+                      <span className="text-[9px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-[--color-brass] text-[#0b0e0d]">
+                        PRIMARY
+                      </span>
+                    </div>
+
+                    <p className="text-xs text-[--color-muted] mt-1 line-clamp-1">
+                      15 members · Zubair (Owner), Pranu, Abhi, Pavan, Prasanth &amp; 10 more
+                    </p>
+
+                    <div className="flex items-center gap-3 mt-3 text-[11px] text-[--color-faint]">
+                      <span>👥 15 Members</span>
+                      <span>·</span>
+                      <span className="text-[--color-brass] font-medium font-mono">₹ INR Enabled</span>
+                      <span>·</span>
+                      <span>Exact paisa splits</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex flex-col items-end gap-2 shrink-0">
+                  <button
+                    onClick={(e) => toggleFavorite(e, "splitops")}
+                    type="button"
+                    title={favorites["splitops"] ? "Starred Favorite" : "Add to Favorites"}
+                    className="p-1.5 rounded-full hover:bg-[--color-surface-raised] transition-transform active:scale-90"
+                  >
+                    <span className="text-lg">
+                      {favorites["splitops"] ? "⭐" : "☆"}
+                    </span>
+                  </button>
+
+                  <span className="inline-flex items-center gap-1 text-xs font-semibold text-[--color-brass] hover:underline mt-2">
+                    Open Group →
+                  </span>
+                </div>
+              </div>
+            </Link>
+          </div>
+
+          {/* Additional Curated Groups */}
+          {[
+            {
+              id: "gachibowli-flat-4b",
+              name: "Gachibowli Flat 4B",
+              icon: "🏠",
+              tag: "APARTMENT",
+              desc: "5 members · Rent, Wifi, Groceries & Cook expenses",
+              members: 5,
+            },
+            {
+              id: "goa-trip-2026",
+              name: "Goa Trip 2026",
+              icon: "🏖️",
+              tag: "TRAVEL",
+              desc: "8 members · Beach Villa, Car Rental, Food & Activities",
+              members: 8,
+            },
+            {
+              id: "weekend-cricket",
+              name: "Weekend Cricket Club",
+              icon: "🏏",
+              tag: "SPORTS",
+              desc: "12 members · Turf Booking, Match Balls & Refreshments",
+              members: 12,
+            },
+          ].map((extra) => {
+            const isFav = !!favorites[extra.id];
+            return (
+              <div key={extra.id} className="relative mb-3">
+                <Link
+                  href="/groups/splitops"
+                  className="block rounded-[--radius-lg] border border-[--color-line] hover:border-[--color-brass]/60 bg-[--color-surface] p-4 transition-all hover:bg-[--color-surface-raised]"
+                >
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-3.5">
+                      <div className="w-10 h-10 rounded-[--radius] bg-[--color-surface-raised] border border-[--color-line] flex items-center justify-center text-lg shrink-0">
+                        {extra.icon}
+                      </div>
+
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm font-semibold text-[--color-text]">
+                            {extra.name}
+                          </span>
+                          <span className="text-[9px] uppercase px-1.5 py-0.2 rounded bg-[--color-surface-raised] text-[--color-muted] font-mono border border-[--color-line]">
+                            {extra.tag}
+                          </span>
+                        </div>
+                        <p className="text-xs text-[--color-muted] mt-0.5 line-clamp-1">
+                          {extra.desc}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2.5 shrink-0">
+                      <button
+                        onClick={(e) => toggleFavorite(e, extra.id)}
+                        type="button"
+                        title={isFav ? "Starred Favorite" : "Add to Favorites"}
+                        className="p-1 text-base hover:scale-110 transition-transform"
+                      >
+                        {isFav ? "⭐" : "☆"}
+                      </button>
+                      <span className="text-xs text-[--color-muted] hover:text-[--color-brass]">
+                        Open →
+                      </span>
+                    </div>
+                  </div>
+                </Link>
+              </div>
+            );
+          })}
+
+          {/* User created dynamic groups */}
           {data?.groups
             .filter((g) => g.name.toLowerCase() !== "splitops")
             .map((group) => {

@@ -31,9 +31,11 @@ export function Amount({
   // glyph would be redundant noise in a balance column.
   const display = negative ? amount.slice(1) : amount;
 
+  const symbol = currency === "INR" ? "₹" : currency;
+
   return (
     <span className={`tabular ${color} ${className}`}>
-      <span className="text-[--color-faint] mr-1 text-[0.85em]">{currency}</span>
+      <span className="text-[--color-faint] mr-1 text-[0.9em] font-medium">{symbol}</span>
       {display}
     </span>
   );

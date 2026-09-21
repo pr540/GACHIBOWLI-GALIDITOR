@@ -117,7 +117,7 @@ export const users = pgTable("user", {
   emailVerified: boolean("email_verified").notNull().default(false),
   image: text("image"),
   // App-owned columns. Better Auth ignores extra columns.
-  defaultCurrency: currency("default_currency").notNull().default("USD"),
+  defaultCurrency: currency("default_currency").notNull().default("INR"),
   locale: text("locale").notNull().default("en"),
   timezone: text("timezone").notNull().default("UTC"),
   preferences: jsonb("preferences").$type<Record<string, unknown>>().notNull().default({}),
@@ -203,7 +203,7 @@ export const groups = pgTable(
     description: text("description"),
     type: groupTypeEnum("type").notNull().default("OTHER"),
     /** Display currency for group totals. Expenses keep their own currency. */
-    defaultCurrency: currency("default_currency").notNull().default("USD"),
+    defaultCurrency: currency("default_currency").notNull().default("INR"),
     /** When true, balances are shown as an optimised transfer plan. */
     simplifyDebts: boolean("simplify_debts").notNull().default(true),
     imageUrl: text("image_url"),

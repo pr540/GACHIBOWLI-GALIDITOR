@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { signIn, signUp } from "../../lib/auth-client";
+import { ThemeToggle } from "../../components/theme-toggle";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -37,9 +38,12 @@ export default function LoginPage() {
 
   return (
     <main className="mx-auto flex min-h-dvh max-w-sm flex-col justify-center px-6 py-16">
-      <Link href="/" className="eyebrow hover:text-[--color-muted] transition-colors">
-        ← SplitBills
-      </Link>
+      <div className="flex items-center justify-between">
+        <Link href="/" className="eyebrow hover:text-[--color-muted] transition-colors">
+          ← ggsplitops
+        </Link>
+        <ThemeToggle />
+      </div>
 
       <h1 className="mt-8 text-2xl font-medium tracking-tight">
         {mode === "signin" ? "Welcome back" : "Create your account"}

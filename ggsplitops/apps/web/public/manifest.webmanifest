@@ -1,6 +1,6 @@
 {
-  "name": "SplitBills",
-  "short_name": "SplitBills",
+  "name": "ggsplitops",
+  "short_name": "ggsplitops",
   "description": "Shared expenses, settled.",
   "start_url": "/groups",
   "display": "standalone",

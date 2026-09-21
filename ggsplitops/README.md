@@ -1,12 +1,12 @@
-# SplitBills
+# ggsplitops
 
 Shared expenses, settled in one payment.
 
 An open-source, self-hostable expense collaboration platform. Track who paid for
 what, and get the smallest set of payments that squares everyone up — exact to
-the cent, in any currency.
+the paisa / cent, in any currency (default INR ₹).
 
-MIT licensed. No account limits, no ads, no data broker in the middle.
+MIT licensed. (Adapted from SplitBills by Aaron Sequeira).
 
 ---
 

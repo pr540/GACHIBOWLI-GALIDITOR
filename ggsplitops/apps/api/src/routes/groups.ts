@@ -26,7 +26,7 @@ const createGroupSchema = z.object({
   type: z
     .enum(["TRIP", "APARTMENT", "COUPLE", "FAMILY", "OFFICE", "PROJECT", "OTHER"])
     .default("OTHER"),
-  defaultCurrency: currencyCode.default("USD"),
+  defaultCurrency: currencyCode.default("INR"),
   simplifyDebts: z.boolean().default(true),
   /**
    * Seats to create alongside the group. A member with no email is a

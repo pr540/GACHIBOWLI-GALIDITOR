@@ -47,7 +47,7 @@ export const auth = betterAuth({
 
   user: {
     additionalFields: {
-      defaultCurrency: { type: "string", defaultValue: "USD", input: true },
+      defaultCurrency: { type: "string", defaultValue: "INR", input: true },
       locale: { type: "string", defaultValue: "en", input: true },
       timezone: { type: "string", defaultValue: "UTC", input: true },
     },

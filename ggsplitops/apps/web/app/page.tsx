@@ -1,78 +1,89 @@
 import Link from "next/link";
+import { ThemeToggle } from "../components/theme-toggle";
 
-/**
- * The hero is a worked example, not a value proposition.
- *
- * The single most characteristic thing this product does is collapse a tangle
- * of debts into one payment. Showing that happening — three obligations
- * becoming one line — argues for the product better than any headline about
- * "effortless expense management" could.
- */
 export default function LandingPage() {
   return (
-    <main className="mx-auto max-w-3xl px-6 py-20 md:py-32">
-      <p className="eyebrow">Open source · self-hostable · MIT</p>
+    <main className="mx-auto max-w-3xl px-4 py-8 sm:px-6 md:py-24">
+      {/* Mobile-first top header with brand and theme toggle */}
+      <header className="flex items-center justify-between pb-6 border-b border-[--color-line]">
+        <div className="flex items-center gap-2">
+          <span className="font-semibold text-lg tracking-tight text-[--color-text]">ggsplitops</span>
+          <span className="text-xs px-2 py-0.5 rounded bg-[--color-surface-raised] text-[--color-brass] font-mono">₹ INR</span>
+        </div>
+        <div className="flex items-center gap-3">
+          <Link
+            href="/groups"
+            className="text-sm font-medium text-[--color-muted] hover:text-[--color-text] transition-colors"
+          >
+            Groups
+          </Link>
+          <ThemeToggle />
+        </div>
+      </header>
 
-      <h1 className="mt-6 text-4xl leading-[1.05] font-medium tracking-tight md:text-6xl">
-        Shared expenses,
-        <br />
-        <span className="text-[--color-brass]">settled in one payment.</span>
-      </h1>
+      <div className="mt-8">
+        <p className="eyebrow">Open source · self-hostable · MIT</p>
 
-      <p className="text-[--color-muted] mt-6 max-w-lg text-lg leading-relaxed">
-        SplitBills tracks who paid for what, then works out the smallest set of
-        payments that squares everyone up. Amounts are exact to the cent, in any
-        currency.
-      </p>
+        <h1 className="mt-4 text-3xl sm:text-4xl md:text-6xl leading-[1.08] font-medium tracking-tight">
+          Shared expenses,
+          <br />
+          <span className="text-[--color-brass]">settled in one payment.</span>
+        </h1>
 
-      {/* The signature moment: a real ledger, mid-simplification. */}
+        <p className="text-[--color-muted] mt-4 max-w-lg text-base sm:text-lg leading-relaxed">
+          <strong className="text-[--color-text] font-medium">ggsplitops</strong> tracks who paid for what, then works out the smallest set of
+          payments that squares everyone up. Amounts are exact to the paisa, in INR (₹).
+        </p>
+      </div>
+
+      {/* The signature moment: a real ledger, mid-simplification */}
       <section
         aria-label="Example: three debts becoming one payment"
-        className="border-[--color-line] bg-[--color-surface] mt-14 rounded-[--radius-lg] border p-6 md:p-8"
+        className="border-[--color-line] bg-[--color-surface] mt-10 rounded-[--radius-lg] border p-5 sm:p-7 md:p-8"
       >
-        <p className="eyebrow">Before · Goa trip</p>
+        <p className="eyebrow">Before · SplitOps Dinner</p>
         <div className="mt-3">
           {[
-            ["Aaron owes John", "40.00"],
-            ["John owes Alex", "40.00"],
-            ["Alex owes Priya", "40.00"],
+            ["Zubair owes Pranu", "450.00"],
+            ["Pranu owes Abhi", "450.00"],
+            ["Abhi owes Pavan", "450.00"],
           ].map(([label, amount]) => (
             <div key={label} className="ledger-row">
               <span className="text-[--color-muted] text-sm">{label}</span>
               <span className="ledger-leader" aria-hidden="true" />
-              <span className="tabular text-[--color-debit] text-sm">INR {amount}</span>
+              <span className="tabular text-[--color-debit] text-sm font-medium">₹ {amount}</span>
             </div>
           ))}
         </div>
 
         <div className="border-[--color-line] mt-6 border-t pt-6">
-          <p className="eyebrow">After</p>
+          <p className="eyebrow text-[--color-brass]">After Simplification</p>
           <div className="mt-3">
             <div className="ledger-row">
-              <span className="text-sm">Aaron pays Priya</span>
+              <span className="text-sm font-medium">Zubair pays Pavan</span>
               <span className="ledger-leader" aria-hidden="true" />
-              <span className="tabular text-[--color-credit]">INR 40.00</span>
+              <span className="tabular text-[--color-credit] text-sm font-medium">₹ 450.00</span>
             </div>
           </div>
-          <p className="text-[--color-faint] mt-4 text-sm">
-            Three payments become one. Nobody&rsquo;s net balance changes by a cent.
+          <p className="text-[--color-faint] mt-4 text-xs sm:text-sm">
+            Three payments collapse into one. Nobody&rsquo;s net balance changes by a single rupee.
           </p>
         </div>
       </section>
 
-      <div className="mt-10 flex flex-wrap items-center gap-4">
+      <div className="mt-8 flex flex-wrap items-center gap-4">
+        <Link
+          href="/groups"
+          className="bg-[--color-brass] rounded-[--radius] px-5 py-2.5 text-sm font-semibold text-[#0b0e0d] transition-opacity hover:opacity-90 active:scale-95"
+        >
+          Open SplitOps
+        </Link>
         <Link
           href="/login"
-          className="bg-[--color-brass] rounded-[--radius] px-5 py-2.5 text-sm font-medium text-[#0b0e0d] transition-opacity hover:opacity-90"
+          className="border border-[--color-line] hover:border-[--color-line-bright] rounded-[--radius] px-4 py-2 text-sm text-[--color-muted] hover:text-[--color-text] transition-colors"
         >
-          Start splitting
+          Sign In
         </Link>
-        <a
-          href="https://github.com/aaron-seq/SplitBills"
-          className="text-[--color-muted] hover:text-[--color-text] text-sm transition-colors"
-        >
-          Read the source
-        </a>
       </div>
     </main>
   );

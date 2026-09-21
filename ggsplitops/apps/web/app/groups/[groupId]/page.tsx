@@ -7,6 +7,7 @@ import { use, useEffect, useMemo, useState } from "react";
 import { Amount } from "../../../components/amount";
 import { ExpenseModal } from "../../../components/edit-expense-modal";
 import { MemberManagerModal, type ManagedMember } from "../../../components/member-manager-modal";
+import { MonthDashboard } from "../../../components/month-dashboard";
 import { ThemeToggle } from "../../../components/theme-toggle";
 import {
   getBalances,
@@ -410,6 +411,15 @@ export default function GroupPage({ params }: { params: Promise<{ groupId: strin
           })}
         </div>
       </section>
+
+      {/* Dynamic This Month Dashboard */}
+      <div className="mt-6">
+        <MonthDashboard
+          expenses={expensesList}
+          members={members}
+          onSelectMonthFilter={() => setDateFilter("MONTH")}
+        />
+      </div>
 
       {/* Net Balances Section */}
       <section className="mt-8 border-t border-[--color-line] pt-6">

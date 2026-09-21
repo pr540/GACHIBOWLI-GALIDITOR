@@ -64,3 +64,19 @@ Build add/edit/delete expense: title, amount, date, paid by (one or many), parti
 - Verified test suite and monorepo builds.
 - Committed all changes to git repository.
 
+
+---
+
+## Prompt 5
+**User Request:**
+```text
+dashbord next and caledra also should kept 
+hisrtoy clea r button and use differnet images you can setup for dashbord 
+splitops remove hristory and amount should remove when the swicth the account that member only should this website
+```
+**Actions Taken:**
+- Added interactive **Month Calendar view** alongside the KPI cards mode in `MonthDashboard`, showing day cells with total amounts and allowing 1-tap day filtering.
+- Generated and integrated a modern **3D financial dashboard image banner** (`/dashboard_banner.jpg`) with collapsible header.
+- Implemented **"Clear History"** button in the Expense History toolbar with full confirmation modal to safely reset all expenses and balances.
+- Implemented **Member-Scoped Personal View** (`👤 My View` vs `All Members`): when switching active accounts, the website dynamically scopes and displays only that member's relevant expenses, debts, and dashboard totals.
+- Verified test suite (30/30 passing) and committed to git repository.

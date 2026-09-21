@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>ggsplitops — Android Tester App</title>
+  <style>
+    :root {
+      --canvas: #0b0e0d;
+      --surface: #131816;
+      --surface-raised: #1a211e;
+      --line: #232c28;
+      --line-bright: #33403a;
+      --text: #e9eeeb;
+      --muted: #8b9793;
+      --credit: #6ee7a8;
+      --debit: #ff8a7a;
+      --brass: #e8b44a;
+      --brass-dim: #3a2e14;
+      --radius: 12px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background: var(--canvas); color: var(--text); padding-bottom: 80px; -webkit-tap-highlight-color: transparent; }
+    
+    /* Top Header */
+    .header { background: #070b09; border-b: 1px solid var(--line); padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 40; backdrop-filter: blur(10px); }
+    .brand { display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 18px; color: #fff; }
+    .pulse-dot { width: 10px; height: 10px; background: var(--brass); border-radius: 50%; box-shadow: 0 0 8px rgba(232,180,74,0.8); }
+    .badge-inr { font-size: 10px; background: rgba(255,255,255,0.1); color: var(--brass); padding: 2px 8px; border-radius: 20px; border: 1px solid rgba(232,180,74,0.3); font-family: monospace; }
+    
+    /* Server connection alert */
+    .server-bar { background: var(--surface-raised); border-bottom: 1px solid var(--line); padding: 8px 16px; display: flex; align-items: center; justify-content: space-between; font-size: 11px; }
+    .server-status { display: flex; align-items: center; gap: 6px; color: var(--muted); }
+    .btn-connect { background: var(--brass); color: #000; border: none; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer; }
+
+    /* Content Container */
+    .container { padding: 16px; max-width: 600px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; }
+
+    /* Cards */
+    .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px; }
+    
+    /* Member selector */
+    .member-bar { display: flex; align-items: center; justify-content: space-between; }
+    .member-info { display: flex; align-items: center; gap: 10px; }
+    .avatar { width: 36px; height: 36px; border-radius: 10px; background: var(--brass-dim); border: 1px solid var(--brass); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; color: var(--brass); }
+    .member-select { background: var(--surface-raised); border: 1px solid var(--line-bright); color: var(--text); padding: 6px 10px; border-radius: 8px; font-size: 12px; outline: none; }
+
+    /* KPI Grid */
+    .kpi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .kpi-card { background: var(--surface-raised); border: 1px solid var(--line); border-radius: 10px; padding: 12px; }
+    .kpi-label { font-size: 10px; color: var(--muted); text-transform: uppercase; font-family: monospace; }
+    .kpi-val { font-size: 18px; font-weight: 800; margin-top: 4px; font-family: monospace; }
+    .credit-val { color: var(--credit); }
+    .debit-val { color: var(--debit); }
+
+    /* Calendar Grid */
+    .cal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+    .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; }
+    .cal-weekday { font-size: 10px; color: var(--muted); font-family: monospace; padding: 4px 0; }
+    .cal-day { aspect-ratio: 1; border-radius: 6px; background: var(--surface-raised); border: 1px solid var(--line); display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 11px; cursor: pointer; }
+    .cal-day.has-spend { border-color: var(--brass); background: var(--brass-dim); color: var(--brass); font-weight: 700; }
+    .cal-day.today { border-color: var(--credit); }
+
+    /* Expense List */
+    .exp-item { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--line); }
+    .exp-item:last-child { border-bottom: none; }
+    .exp-left { display: flex; align-items: center; gap: 10px; }
+    .exp-icon { width: 32px; height: 32px; border-radius: 8px; background: var(--surface-raised); display: flex; align-items: center; justify-content: center; font-size: 14px; }
+    .exp-title { font-size: 13px; font-weight: 600; }
+    .exp-meta { font-size: 11px; color: var(--muted); margin-top: 2px; }
+    .exp-amt { font-size: 14px; font-weight: 700; font-family: monospace; }
+
+    /* Action buttons */
+    .btn-main { background: var(--brass); color: #000; border: none; padding: 12px; border-radius: var(--radius); font-size: 14px; font-weight: 700; width: 100%; cursor: pointer; text-align: center; display: block; }
+    .btn-secondary { background: var(--surface-raised); border: 1px solid var(--line); color: var(--muted); padding: 8px 12px; border-radius: 8px; font-size: 12px; cursor: pointer; }
+
+    /* Modal dialogs */
+    .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 100; align-items: center; justify-content: center; padding: 16px; }
+    .modal.active { display: flex; }
+    .modal-box { background: var(--surface); border: 1px solid var(--line-bright); border-radius: var(--radius); padding: 20px; width: 100%; max-width: 400px; }
+    .modal-title { font-size: 16px; font-weight: 700; margin-bottom: 12px; display: flex; justify-content: space-between; }
+    .input-row { margin-bottom: 12px; }
+    .input-row label { display: block; font-size: 11px; color: var(--muted); margin-bottom: 4px; }
+    .input-field { width: 100%; background: var(--canvas); border: 1px solid var(--line-bright); color: var(--text); padding: 10px; border-radius: 8px; font-size: 13px; outline: none; }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="brand">
+      <span class="pulse-dot"></span>
+      <span>ggsplitops</span>
+      <span class="badge-inr">₹ INR</span>
+    </div>
+    <button class="btn-secondary" onclick="openServerConfig()">⚙️ Server</button>
+  </header>
+
+  <!-- Server connection indicator -->
+  <div class="server-bar">
+    <div class="server-status">
+      <span style="color: var(--credit);">●</span>
+      <span id="serverUrlText">Tester Standalone Build</span>
+    </div>
+    <button class="btn-connect" onclick="connectLive()">Connect Live ⚡</button>
+  </div>
+
+  <div class="container">
+    <!-- Active Member Bar -->
+    <div class="card member-bar">
+      <div class="member-info">
+        <div class="avatar" id="avatarInitial">Z</div>
+        <div>
+          <div style="font-size: 13px; font-weight: 700;" id="currentUserName">Zubair (Owner)</div>
+          <div style="font-size: 11px; color: var(--muted);">SplitOps Primary Group · 15 Members</div>
+        </div>
+      </div>
+      <select class="member-select" id="memberSelect" onchange="changeMember()">
+        <option value="Zubair">Zubair (Owner)</option>
+        <option value="Pranu">Pranu</option>
+        <option value="Abhi">Abhi Venkata Sai</option>
+        <option value="Pavan">Pavan Sai</option>
+        <option value="Prasanth">Prasanth</option>
+        <option value="Ajay">Ajay</option>
+        <option value="Devi">Devi</option>
+        <option value="Hassi">Hassi</option>
+      </select>
+    </div>
+
+    <!-- Monthly Dashboard Cards -->
+    <div class="card">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <span style="font-size: 11px; font-family: monospace; color: var(--brass); text-transform: uppercase;">This Month · September 2026</span>
+        <button class="btn-secondary" onclick="toggleCalendar()" id="calToggleBtn">📅 Calendar</button>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-label">Total Spent</div>
+          <div class="kpi-val" id="totalSpentDisplay">₹ 0.00</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Fair Share</div>
+          <div class="kpi-val" id="fairShareDisplay">₹ 0.00</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">You Paid</div>
+          <div class="kpi-val credit-val" id="youPaidDisplay">₹ 0.00</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Net Position</div>
+          <div class="kpi-val" id="netPositionDisplay">₹ 0.00</div>
+        </div>
+      </div>
+
+      <!-- Calendar View (Hidden by default) -->
+      <div id="calendarSection" style="display: none; margin-top: 16px; border-top: 1px solid var(--line); padding-top: 12px;">
+        <div class="cal-header">
+          <span style="font-size: 12px; font-weight: 700;">September 2026</span>
+          <span style="font-size: 11px; color: var(--muted);">Tap day to filter</span>
+        </div>
+        <div class="cal-grid" id="calendarGrid"></div>
+      </div>
+    </div>
+
+    <!-- Add Expense CTA -->
+    <button class="btn-main" onclick="openExpenseModal()">+ Add Split Expense</button>
+
+    <!-- Expense History -->
+    <div class="card">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+        <span style="font-size: 13px; font-weight: 700;">Expense History</span>
+        <button class="btn-secondary" onclick="clearHistory()" style="color: var(--debit);">🗑 Clear</button>
+      </div>
+      <div id="expenseList">
+        <div style="text-align: center; padding: 24px 0; color: var(--muted); font-size: 12px;">
+          No expenses recorded yet.<br>Default ledger is clean at ₹0.00.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Expense Modal -->
+  <div class="modal" id="expenseModal">
+    <div class="modal-box">
+      <div class="modal-title">
+        <span>Add Split Expense</span>
+        <span style="cursor: pointer;" onclick="closeModal()">✕</span>
+      </div>
+      <div class="input-row">
+        <label>Description</label>
+        <input class="input-field" id="expDesc" placeholder="e.g. Dinner, Snacks, Turf" />
+      </div>
+      <div class="input-row">
+        <label>Amount (₹ INR)</label>
+        <input class="input-field" id="expAmount" type="number" step="0.01" placeholder="450.00" />
+      </div>
+      <div class="input-row">
+        <label>Split Method</label>
+        <select class="input-field" id="expSplitMethod">
+          <option value="EQUAL">Equal Split</option>
+          <option value="EXACT">Exact Rupee Split</option>
+          <option value="PERCENTAGE">Percentage Split</option>
+          <option value="SHARES">Shares Split</option>
+        </select>
+      </div>
+      <div class="input-row">
+        <label>Paid By</label>
+        <select class="input-field" id="expPaidBy">
+          <option value="Zubair">Zubair (Owner)</option>
+          <option value="Pranu">Pranu</option>
+          <option value="Abhi">Abhi</option>
+          <option value="Pavan">Pavan</option>
+          <option value="Prasanth">Prasanth</option>
+        </select>
+      </div>
+      <button class="btn-main" style="margin-top: 10px;" onclick="saveExpense()">Confirm & Split Bill</button>
+    </div>
+  </div>
+
+  <script>
+    let expenses = JSON.parse(localStorage.getItem("gg_offline_expenses") || "[]");
+    let currentMember = "Zubair";
+
+    function updateUI() {
+      const total = expenses.reduce((acc, e) => acc + Number(e.amount), 0);
+      const youPaid = expenses.filter(e => e.paidBy === currentMember).reduce((acc, e) => acc + Number(e.amount), 0);
+      const fairShare = expenses.length > 0 ? (total / 15) : 0;
+      const net = youPaid - fairShare;
+
+      document.getElementById("totalSpentDisplay").innerText = "₹ " + total.toFixed(2);
+      document.getElementById("fairShareDisplay").innerText = "₹ " + fairShare.toFixed(2);
+      document.getElementById("youPaidDisplay").innerText = "₹ " + youPaid.toFixed(2);
+      
+      const netEl = document.getElementById("netPositionDisplay");
+      if (net > 0) {
+        netEl.innerText = "+₹ " + net.toFixed(2);
+        netEl.className = "kpi-val credit-val";
+      } else if (net < 0) {
+        netEl.innerText = "-₹ " + Math.abs(net).toFixed(2);
+        netEl.className = "kpi-val debit-val";
+      } else {
+        netEl.innerText = "₹ 0.00";
+        netEl.className = "kpi-val";
+      }
+
+      const listEl = document.getElementById("expenseList");
+      if (expenses.length === 0) {
+        listEl.innerHTML = '<div style="text-align: center; padding: 24px 0; color: var(--muted); font-size: 12px;">No expenses recorded yet.<br>Default ledger is clean at ₹0.00.</div>';
+      } else {
+        listEl.innerHTML = expenses.map(e => `
+          <div class="exp-item">
+            <div class="exp-left">
+              <div class="exp-icon">🧾</div>
+              <div>
+                <div class="exp-title">${e.desc}</div>
+                <div class="exp-meta">Paid by ${e.paidBy} · ${e.date} · ${e.splitMethod}</div>
+              </div>
+            </div>
+            <div class="exp-amt">₹ ${Number(e.amount).toFixed(2)}</div>
+          </div>
+        `).join("");
+      }
+
+      renderCalendar();
+    }
+
+    function renderCalendar() {
+      const grid = document.getElementById("calendarGrid");
+      grid.innerHTML = ["S","M","T","W","T","F","S"].map(d => `<div class="cal-weekday">${d}</div>`).join("");
+      
+      // September 2026 starts on Tuesday (offset 2)
+      for (let i = 0; i < 2; i++) {
+        grid.innerHTML += '<div></div>';
+      }
+      for (let day = 1; day <= 30; day++) {
+        const dateStr = `Sep ${day}`;
+        const hasSpend = expenses.some(e => e.date.includes(dateStr));
+        const isToday = day === 21;
+        grid.innerHTML += `<div class="cal-day ${hasSpend ? 'has-spend' : ''} ${isToday ? 'today' : ''}" onclick="filterDay('${dateStr}')">${day}</div>`;
+      }
+    }
+
+    function changeMember() {
+      currentMember = document.getElementById("memberSelect").value;
+      document.getElementById("currentUserName").innerText = currentMember;
+      document.getElementById("avatarInitial").innerText = currentMember.charAt(0);
+      updateUI();
+    }
+
+    function toggleCalendar() {
+      const sec = document.getElementById("calendarSection");
+      const btn = document.getElementById("calToggleBtn");
+      if (sec.style.display === "none") {
+        sec.style.display = "block";
+        btn.innerText = "Cards";
+      } else {
+        sec.style.display = "none";
+        btn.innerText = "📅 Calendar";
+      }
+    }
+
+    function openExpenseModal() {
+      document.getElementById("expenseModal").classList.add("active");
+    }
+
+    function closeModal() {
+      document.getElementById("expenseModal").classList.remove("active");
+    }
+
+    function saveExpense() {
+      const desc = document.getElementById("expDesc").value.trim() || "Expense";
+      const amount = parseFloat(document.getElementById("expAmount").value) || 0;
+      const splitMethod = document.getElementById("expSplitMethod").value;
+      const paidBy = document.getElementById("expPaidBy").value;
+
+      if (amount <= 0) {
+        alert("Please enter a valid amount greater than ₹0");
+        return;
+      }
+
+      const today = "Sep 21, 2026";
+      expenses.unshift({ desc, amount, splitMethod, paidBy, date: today });
+      localStorage.setItem("gg_offline_expenses", JSON.stringify(expenses));
+      closeModal();
+      document.getElementById("expAmount").value = "";
+      document.getElementById("expDesc").value = "";
+      updateUI();
+    }
+
+    function clearHistory() {
+      if (confirm("Reset ledger to ₹0.00 and delete all expenses?")) {
+        expenses = [];
+        localStorage.removeItem("gg_offline_expenses");
+        updateUI();
+      }
+    }
+
+    function filterDay(d) {
+      alert("Filtering expenses for " + d);
+    }
+
+    function openServerConfig() {
+      if (window.MainActivity && window.MainActivity.showServerUrlDialog) {
+        window.MainActivity.showServerUrlDialog();
+      } else {
+        const url = prompt("Enter Server URL to connect:", "http://10.218.180.144:3000");
+        if (url) window.location.href = url;
+      }
+    }
+
+    function connectLive() {
+      window.location.href = "http://10.218.180.144:3000";
+    }
+
+    updateUI();
+  </script>
+</body>
+</html>

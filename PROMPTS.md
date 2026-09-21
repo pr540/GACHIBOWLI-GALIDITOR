@@ -115,3 +115,18 @@ fastly do it
 - Overhauled `/groups` page: removed duplicate SplitOps card, softened harsh wireframe borders, added real-time group search and a "Favorites Only" toggle filter.
 - Upgraded `/login` page with ambient wallpaper backdrop, glassmorphic card, and crystal-clear member roster chips.
 - Verified all 30/30 unit tests pass, TypeScript compiles with 0 errors, and dev server routes return HTTP 200.
+
+---
+
+## Prompt 8
+**User Request:**
+```text
+as of now grenate a apk file once check tester then i give bugs then you reslove
+```
+**Actions Taken:**
+- Set up local user-space Android toolchain with **OpenJDK 17** and **Android SDK 34** (`platforms;android-34`, `build-tools;34.0.0`, `cmdline-tools`).
+- Created the native Android application under `apps/android` (`com.splitops.ggsplitops`) featuring a full-screen hardware-accelerated WebView, connection error fallback, and dynamic server configurator.
+- Embedded the standalone offline SplitOps application in `assets/www/index.html` supporting all 15 SplitOps members, 4 split methods, monthly dashboard, and local persistence.
+- Compiled, aligned, and signed the production-ready Android APK using `aapt2`, `javac`, `d8`, `zipalign`, and `apksigner`.
+- Verified APK integrity with `apksigner verify` and `apkanalyzer`.
+- Exported the installable APK file to [ggsplitops.apk](file:///home/praneeth/Downloads/GACHIBOWLI-GALIDITOR/ggsplitops.apk).

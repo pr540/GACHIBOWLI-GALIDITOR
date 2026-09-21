@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">ggsplitops</string>
+    <string name="default_server_url">http://10.218.180.144:3000</string>
+</resources>

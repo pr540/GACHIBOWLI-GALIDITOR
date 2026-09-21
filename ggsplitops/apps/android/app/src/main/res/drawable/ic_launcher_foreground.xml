@@ -1,0 +1,16 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:fillColor="#0b0e0d"
+        android:pathData="M0,0h108v108h-108z" />
+    <!-- Gold Coin / SplitOps Icon -->
+    <path
+        android:fillColor="#e8b44a"
+        android:pathData="M54,24 A30,30 0 1,0 54,84 A30,30 0 1,0 54,24 Z" />
+    <path
+        android:fillColor="#0b0e0d"
+        android:pathData="M51,36h6v4h-6z M46,44h16v4h-16z M46,52h16v4h-16z M51,60h6v12h-6z" />
+</vector>

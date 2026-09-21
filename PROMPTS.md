@@ -80,3 +80,19 @@ splitops remove hristory and amount should remove when the swicth the account th
 - Implemented **"Clear History"** button in the Expense History toolbar with full confirmation modal to safely reset all expenses and balances.
 - Implemented **Member-Scoped Personal View** (`👤 My View` vs `All Members`): when switching active accounts, the website dynamically scopes and displays only that member's relevant expenses, debts, and dashboard totals.
 - Verified test suite (30/30 passing) and committed to git repository.
+
+---
+
+## Prompt 6
+**User Request:**
+```text
+google sign page iwant you only create and autheciation give me dashbord background images add sign and  google with sigin 
+add images and data should remove when login or sign in then only show our gg group 
+and add another groups also 
+expenses also remove when i add spilt then only histroy will come default amount remove
+```
+**Actions Taken:**
+- Implemented **Google Sign-In page** with official multicolor Google authentication button, background hero banner image, glassmorphic login card, and account selector dialog.
+- Completely removed the default sample expense (₹3,750); all member amounts and balances now **start clean at ₹0.00**. History and balances only populate when a user explicitly adds a split expense.
+- Added **curated and custom groups** ("SplitOps (Primary GG Group)", "Gachibowli Flat 4B", "Goa Trip 2026", "Weekend Cricket Club") with individual icons, member counts, and favorite star toggles.
+- Verified test suite and committed to git repository.

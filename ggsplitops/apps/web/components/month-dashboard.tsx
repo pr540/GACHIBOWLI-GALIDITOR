@@ -63,7 +63,7 @@ export function MonthDashboard({
     setSelectedMonth(today.getMonth());
   };
 
-  const activeMemberId = currentUser?.id || members[0]?.id;
+  const activeMemberId = currentUser?.id || members[0]?.id || "";
 
   // Filter expenses strictly to selected month & year
   const rawMonthExpenses = useMemo(() => {

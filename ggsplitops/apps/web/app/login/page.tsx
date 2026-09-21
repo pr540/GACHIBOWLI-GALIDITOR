@@ -43,10 +43,11 @@ export default function LoginPage() {
   const handleGoogleSignIn = (emailOrName?: string) => {
     setIsGoogleSigningIn(true);
     setTimeout(() => {
-      const name = emailOrName?.trim() || googleEmail.trim() || "Praneeth (Google)";
+      const rawName = emailOrName?.trim() || googleEmail.trim() || "Praneeth (Google)";
+      const cleanName = rawName.includes("@") ? rawName.split("@")[0] || rawName : rawName;
       const googleUser: ActiveUser = {
         id: `google-${Date.now()}`,
-        name: name.includes("@") ? name.split("@")[0] : name,
+        name: cleanName || "Google User",
         role: "MEMBER",
         tag: "Google",
       };

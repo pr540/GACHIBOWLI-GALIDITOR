@@ -76,9 +76,19 @@ export default function LoginPage() {
   );
 
   return (
-    <main className="min-h-screen flex items-center justify-center p-4 sm:p-6 bg-[--color-canvas] text-[--color-text]">
-      {/* High-Contrast Card */}
-      <div className="w-full max-w-lg rounded-2xl border border-[--color-line-bright] bg-[--color-surface] p-6 sm:p-8 shadow-2xl">
+    <main className="relative min-h-screen flex items-center justify-center p-4 sm:p-6 bg-[--color-canvas] text-[--color-text] overflow-hidden">
+      {/* Ambient Background Wallpaper */}
+      <div className="absolute inset-0 z-0 pointer-events-none">
+        <img
+          src="/splitops_banner.jpg"
+          alt="SplitOps Wallpaper"
+          className="w-full h-full object-cover opacity-25 mix-blend-luminosity filter blur-xs scale-105"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-[--color-canvas] via-[--color-canvas]/80 to-[--color-canvas]/70" />
+      </div>
+
+      {/* High-Contrast Glassmorphic Card */}
+      <div className="relative z-10 w-full max-w-lg rounded-2xl border border-[--color-line-bright] bg-[--color-surface]/95 backdrop-blur-md p-6 sm:p-8 shadow-2xl">
         {/* Header */}
         <div className="flex items-center justify-between pb-4 border-b border-[--color-line]">
           <Link href="/" className="font-bold text-lg tracking-tight text-[--color-text] flex items-center gap-2 hover:opacity-80">

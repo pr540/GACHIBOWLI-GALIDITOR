@@ -96,3 +96,22 @@ expenses also remove when i add spilt then only histroy will come default amount
 - Completely removed the default sample expense (₹3,750); all member amounts and balances now **start clean at ₹0.00**. History and balances only populate when a user explicitly adds a split expense.
 - Added **curated and custom groups** ("SplitOps (Primary GG Group)", "Gachibowli Flat 4B", "Goa Trip 2026", "Weekend Cricket Club") with individual icons, member counts, and favorite star toggles.
 - Verified test suite and committed to git repository.
+
+---
+
+## Prompt 7
+**User Request:**
+```text
+when click the task show me this like must should be clearly fix the isuess
+remove this part and
+images is half only
+use different images ui is not good give me ui/ux
+fastly do it
+```
+**Actions Taken:**
+- Completely removed the circular debt table example card (`EXAMPLE: SPLITOPS DINNER`) from the landing page as requested.
+- Fixed the half-cutoff banner image by replacing it with a full-bleed, immersive fintech hero header with modern generated visual art (`/splitops_banner.jpg`), smooth gradient transitions, and ambient glows.
+- Redesigned the landing page with modern UI/UX: 4 feature cards (4 Precision Split Modes, 15 SplitOps Roster, Dynamic Month Calendar Heatmap, Pristine Zero-Ledger), prominent Google Sign-In and Group launcher CTAs.
+- Overhauled `/groups` page: removed duplicate SplitOps card, softened harsh wireframe borders, added real-time group search and a "Favorites Only" toggle filter.
+- Upgraded `/login` page with ambient wallpaper backdrop, glassmorphic card, and crystal-clear member roster chips.
+- Verified all 30/30 unit tests pass, TypeScript compiles with 0 errors, and dev server routes return HTTP 200.

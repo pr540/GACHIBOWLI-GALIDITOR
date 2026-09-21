@@ -33,3 +33,18 @@ please fastly do it
 - Implemented Excel spreadsheet export (.xls/.csv) with live fractional Excel formulas (`=1/N`, `=ROUND(...)`, `=SUM(...)`, and member participation matrix).
 - Tested builds and verified all functionalities.
 - Committed all changes to git repository.
+
+---
+
+## Prompt 3
+**User Request:**
+```text
+Every member has full access to everything: add/edit/delete expenses, add/edit/remove members, rename the group, settle up. No admin restrictions. Add a member manager screen: add, rename, remove, optional free-text tag, add guest members anytime. Login = pick your name from the list (no password), remembered on device. Show "last edited by <name> at <time>" on every expense. Commit.
+```
+**Actions Taken:**
+- Removed admin restrictions across API (`requireMembership`) and UI so every member has equal full access to add/edit/delete expenses, add/rename/remove members, rename the group, and settle up.
+- Created device-remembered passwordless profile login (`useActiveUser()` + name picker) with instant 1-tap switching.
+- Created dedicated Member Manager screen supporting member additions, inline renaming, removal, optional free-text tags, and instant guest member creation.
+- Implemented full expense editing and deletion with prominent `"Last edited by <name> at <time>"` metadata on each expense card.
+- Implemented inline group renaming.
+- Verified builds and committed changes.

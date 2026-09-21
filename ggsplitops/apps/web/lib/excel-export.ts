@@ -18,6 +18,8 @@ export interface ExportExpense {
   payerId: string;
   spentAt?: string;
   participants: { memberId: string; displayName: string }[];
+  lastEditedByName?: string;
+  lastEditedAt?: string;
 }
 
 export interface ExportMember {

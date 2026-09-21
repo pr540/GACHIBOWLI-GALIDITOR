@@ -2,10 +2,9 @@
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState } from "react";
+import { UserProvider } from "../lib/user-context";
 
 export function Providers({ children }: { children: React.ReactNode }) {
-  // Created in state so each browser tab gets one client and server renders
-  // never share cache between users.
   const [client] = useState(
     () =>
       new QueryClient({
@@ -19,5 +18,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
       }),
   );
 
-  return <QueryClientProvider client={client}>{children}</QueryClientProvider>;
+  return (
+    <QueryClientProvider client={client}>
+      <UserProvider>{children}</UserProvider>
+    </QueryClientProvider>
+  );
 }

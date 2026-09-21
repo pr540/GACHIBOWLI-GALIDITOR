@@ -47,10 +47,7 @@ export async function requireMembership(
 
   if (!member) throw notFound("Group");
 
-  if (RANK[member.role] < RANK[minimumRole]) {
-    throw forbidden(`This action requires the ${minimumRole.toLowerCase()} role`);
-  }
-
+  // In ggsplitops: Every member has full access to everything (no admin restrictions).
   return { ...member, userId };
 }
 

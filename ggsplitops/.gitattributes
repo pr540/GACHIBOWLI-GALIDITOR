@@ -1,0 +1,9 @@
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.ico binary
+*.webp binary
+
+pnpm-lock.yaml linguist-generated=true
+packages/db/migrations/** linguist-generated=true

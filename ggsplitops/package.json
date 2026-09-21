@@ -1,0 +1,33 @@
+{
+  "name": "splitbills",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Open-source collaborative finance platform — expense splitting, debt simplification, AI receipt parsing.",
+  "license": "MIT",
+  "packageManager": "pnpm@10.15.0",
+  "engines": {
+    "node": ">=22.18.0"
+  },
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "test": "turbo run test",
+    "check": "turbo run typecheck test lint",
+    "db:generate": "pnpm --filter @splitbills/db generate",
+    "db:migrate": "pnpm --filter @splitbills/db migrate",
+    "db:push": "pnpm --filter @splitbills/db push",
+    "db:studio": "pnpm --filter @splitbills/db studio",
+    "db:seed": "pnpm --filter @splitbills/db seed",
+    "up": "docker compose up -d",
+    "down": "docker compose down",
+    "format": "prettier --write \"**/*.{ts,tsx,md,json}\""
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.3",
+    "prettier": "^3.5.3",
+    "turbo": "^2.5.4",
+    "typescript": "^5.8.3"
+  }
+}

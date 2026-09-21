@@ -1,0 +1,29 @@
+{
+  "name": "@splitbills/api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "SplitBills HTTP API (Hono).",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "dev": "node --watch --env-file=../../.env src/index.ts",
+    "start": "node --env-file=../../.env src/index.ts",
+    "build": "tsc --noEmit",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@hono/node-server": "^1.14.3",
+    "@hono/zod-validator": "^0.5.0",
+    "@splitbills/core": "workspace:*",
+    "@splitbills/db": "workspace:*",
+    "better-auth": "^1.5.0",
+    "hono": "^4.7.10",
+    "zod": "^3.25.7"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.3",
+    "typescript": "^5.8.3"
+  }
+}

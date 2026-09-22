@@ -1,0 +1,10 @@
+node_modules
+.next
+.turbo
+dist
+build
+.git
+apps/android/app/build
+apps/android/.gradle
+*.log
+.DS_Store

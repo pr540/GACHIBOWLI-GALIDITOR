@@ -30,3 +30,4 @@ coverage/
 # Never commit exported data dumps.
 *-output.txt
 /exports/
+*.idsig

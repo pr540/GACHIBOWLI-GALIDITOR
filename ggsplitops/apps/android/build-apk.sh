@@ -32,8 +32,8 @@ aapt2 link build/res.zip \
     --java build/gen \
     --min-sdk-version 24 \
     --target-sdk-version 34 \
-    --version-code 4 \
-    --version-name "1.3.0"
+    --version-code 5 \
+    --version-name "1.4.0"
 
 echo "=== 5. Compiling Java sources with javac ==="
 javac -encoding UTF-8 \

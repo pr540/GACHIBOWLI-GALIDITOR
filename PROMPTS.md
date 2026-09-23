@@ -231,6 +231,20 @@ when the apk should not open fix the isuess
 - Fixed `MainActivity`: extracted `fallBackToOffline()` and call it from both `onReceivedError` and new `onReceivedHttpError` — any dead server/URL now drops to the offline bundle with an "Offline mode activated" toast.
 - Released **v1.3.0 (versionCode 4)**: rebuilt, `apksigner verify` clean, manifest confirms 1.3.0/code 4. Published as `ggsplitops.apk`, `ggsplitops-v1.3.0.apk`, `ggsplitops/ggsplitops.apk` (identical).
 - New tester link: `https://usb-retrieved-distributor-installation.trycloudflare.com`.
+
+---
+
+## Prompt 16
+**User Request:**
+```text
+igot this fix the isuess
+apk should both online and offline do it now
+<screenshot: Vercel 404 NOT_FOUND on gachibowli-galiditor-1cs3yssn4-pr540s-projects.vercel.app>
+```
+**Actions Taken:**
+- Root cause of the 404: Vercel deployed from the repo root (no `package.json`/framework there), producing an empty deployment. Added root-level `vercel.json` (`install`/`build` via `cd ggsplitops`, output `ggsplitops/apps/web/.next`) so the default Root Directory works with zero dashboard changes; pushed, Vercel redeployed automatically.
+- Verified the deployment went from 404 to live routes — but every path 302-redirects to `vercel.com/sso-api`: **Deployment Protection (Vercel Authentication) is ON**, so testers without a Vercel login cannot open it. Needs one owner tap: Project → Settings → Deployment Protection → disable Vercel Authentication. Full content test pending that.
+- Released **v1.4.0 (versionCode 5)**: APK online URL + bundle `LIVE_URL` now point at the permanent Vercel URL (no more tunnel rotation), offline bundle unchanged. Verified signature + manifest, published as `ggsplitops.apk`, `ggsplitops-v1.4.0.apk`, `ggsplitops/ggsplitops.apk`.
 - Note: the old `supplier-handed-...` tunnel link is dead (quick tunnels expire); the live tester link is `https://eligibility-anthony-infinite-enjoyed.trycloudflare.com` — the website itself was never broken.
 
 ---

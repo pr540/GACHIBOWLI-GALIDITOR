@@ -1,0 +1,10 @@
+{
+  "name": "gachibowli-galiditor",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Repo root. The app lives in ggsplitops/ (pnpm monorepo). This file exists only so hosting providers detect the Node/pnpm toolchain.",
+  "packageManager": "pnpm@10.15.0",
+  "engines": {
+    "node": ">=22.18.0"
+  }
+}

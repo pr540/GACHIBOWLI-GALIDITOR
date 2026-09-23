@@ -228,3 +228,13 @@ documetary
 ```
 **Actions Taken:**
 - Wrote `DOCUMENTATION.md` (repo root): full KT documentary — what the system is, stack, layout, golden money/auth rules, feature/tester checklist, API table, DB tables, runbook (dev/docker/test/tunnel/APK/push), testing matrix with tools, security posture, troubleshooting table of solved issues, release log (v1.1.0/v1.2.0), and KT glossary.
+
+---
+
+## Prompt 14
+**User Request:**
+```text
+documentation convert into pdf
+```
+**Actions Taken:**
+- Converted `DOCUMENTATION.md` to `DOCUMENTATION.pdf` (A4, 8 pages, 290 KB) using a stdlib-only Markdown→HTML script plus headless Chrome `--print-to-pdf` (no pandoc/office suite on the machine), and pushed it to main.

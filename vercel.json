@@ -1,7 +1,7 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "installCommand": "cd ggsplitops && pnpm install --frozen-lockfile",
-  "buildCommand": "cd ggsplitops && pnpm --filter @splitbills/web build",
+  "installCommand": "cd ggsplitops && npx -y pnpm@10.15.0 install --frozen-lockfile",
+  "buildCommand": "cd ggsplitops && npx -y pnpm@10.15.0 --filter @splitbills/web build",
   "outputDirectory": "ggsplitops/apps/web/.next",
   "framework": "nextjs"
 }

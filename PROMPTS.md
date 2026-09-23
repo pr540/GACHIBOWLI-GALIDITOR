@@ -245,6 +245,19 @@ apk should both online and offline do it now
 - Root cause of the 404: Vercel deployed from the repo root (no `package.json`/framework there), producing an empty deployment. Added root-level `vercel.json` (`install`/`build` via `cd ggsplitops`, output `ggsplitops/apps/web/.next`) so the default Root Directory works with zero dashboard changes; pushed, Vercel redeployed automatically.
 - Verified the deployment went from 404 to live routes — but every path 302-redirects to `vercel.com/sso-api`: **Deployment Protection (Vercel Authentication) is ON**, so testers without a Vercel login cannot open it. Needs one owner tap: Project → Settings → Deployment Protection → disable Vercel Authentication. Full content test pending that.
 - Released **v1.4.0 (versionCode 5)**: APK online URL + bundle `LIVE_URL` now point at the permanent Vercel URL (no more tunnel rotation), offline bundle unchanged. Verified signature + manifest, published as `ggsplitops.apk`, `ggsplitops-v1.4.0.apk`, `ggsplitops/ggsplitops.apk`.
+
+---
+
+## Prompt 17
+**User Request:**
+```text
+they vercel got this
+<screenshot: Vercel Deployments list — the two newest (root-config commits) show Error in 3s/4s, older ones Ready>
+```
+**Actions Taken:**
+- Diagnosed from the screenshot: Error in 3–4s = toolchain step, not the build. Vercel saw no `package.json` at repo root, so `pnpm` didn't exist when the custom install command ran.
+- Added root `package.json` (private, `packageManager: pnpm@10.15.0`, Node ≥22.18 — detection only, the real workspace stays in `ggsplitops/`) and bootstrapped pnpm via `corepack enable + prepare` in the root `vercel.json` install command. Pushed; Vercel redeployed.
+- Verified the public URL flipped from 404 to live routes — every path now 302-redirects to `vercel.com/sso-api`, i.e. the app deployed and **Deployment Protection (Vercel Authentication) is gating it**. Owner tap still needed: Settings → Deployment Protection → off; then the promised end-to-end content test runs.
 - Note: the old `supplier-handed-...` tunnel link is dead (quick tunnels expire); the live tester link is `https://eligibility-anthony-infinite-enjoyed.trycloudflare.com` — the website itself was never broken.
 
 ---

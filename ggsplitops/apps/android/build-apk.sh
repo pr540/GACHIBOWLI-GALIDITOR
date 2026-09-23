@@ -29,7 +29,11 @@ aapt2 link build/res.zip \
     --manifest app/src/main/AndroidManifest.xml \
     -A app/src/main/assets \
     -o build/app-unaligned.apk \
-    --java build/gen
+    --java build/gen \
+    --min-sdk-version 24 \
+    --target-sdk-version 34 \
+    --version-code 2 \
+    --version-name "1.1.0"
 
 echo "=== 5. Compiling Java sources with javac ==="
 javac -encoding UTF-8 \

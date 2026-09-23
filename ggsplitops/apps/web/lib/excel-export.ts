@@ -18,6 +18,7 @@ export interface ExportExpense {
   payerId: string;
   payers?: { memberId: string; displayName: string; amount: string }[];
   splitMethod?: "EQUAL" | "EXACT" | "PERCENTAGE" | "SHARES";
+  transport?: { mode: "CAB" | "BIKE"; fare: string };
   spentAt?: string;
   participants: { memberId: string; displayName: string; value?: string; amount?: string }[];
   lastEditedByName?: string;
@@ -148,7 +149,6 @@ export function exportGroupToExcel({
   const startRow = 3;
   if (expenses.length === 0) {
     // If no expenses yet, provide a demonstrative example row with live formulas
-    const r = startRow;
     xml += `   <Row>
     <Cell><Data ss:Type="String">Sample</Data></Cell>
     <Cell><Data ss:Type="String">SplitOps Team Dinner</Data></Cell>
@@ -164,8 +164,7 @@ export function exportGroupToExcel({
     xml += `   </Row>\n`;
   } else {
     // Add real expense rows
-    expenses.forEach((exp, idx) => {
-      const rowNum = startRow + idx;
+    expenses.forEach((exp) => {
       const dateStr = exp.spentAt ? new Date(exp.spentAt).toLocaleDateString("en-IN") : new Date().toLocaleDateString("en-IN");
       const numAmount = parseFloat(exp.amount) || 0;
       const participantIds = new Set(exp.participants.map((p) => p.memberId));

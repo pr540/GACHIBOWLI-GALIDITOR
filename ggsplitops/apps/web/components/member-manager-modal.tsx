@@ -67,26 +67,26 @@ export function MemberManagerModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-xs">
-      <div className="w-full max-w-lg rounded-[--radius-lg] border border-[--color-line] bg-[--color-surface] p-5 sm:p-6 shadow-2xl max-h-[90vh] flex flex-col">
+      <div className="w-full max-w-lg rounded-[var(--radius-lg)] border border-[var(--color-line)] bg-[var(--color-surface)] p-5 sm:p-6 shadow-2xl max-h-[90vh] flex flex-col">
         {/* Modal Header */}
-        <div className="flex items-center justify-between pb-4 border-b border-[--color-line]">
+        <div className="flex items-center justify-between pb-4 border-b border-[var(--color-line)]">
           <div>
-            <h2 className="text-lg font-semibold text-[--color-text]">Member Manager</h2>
-            <p className="text-xs text-[--color-muted] mt-0.5">
+            <h2 className="text-lg font-semibold text-[var(--color-text)]">Member Manager</h2>
+            <p className="text-xs text-[var(--color-muted)] mt-0.5">
               Manage team members, tags, and guest participants ({members.length} total)
             </p>
           </div>
           <button
             onClick={onClose}
             type="button"
-            className="text-[--color-muted] hover:text-[--color-text] text-sm p-1 rounded hover:bg-[--color-surface-raised]"
+            className="text-[var(--color-muted)] hover:text-[var(--color-text)] text-sm p-1 rounded hover:bg-[var(--color-surface-raised)]"
           >
             ✕
           </button>
         </div>
 
         {/* Add Member / Guest Form */}
-        <form onSubmit={handleAdd} className="py-4 border-b border-[--color-line] space-y-3">
+        <form onSubmit={handleAdd} className="py-4 border-b border-[var(--color-line)] space-y-3">
           <span className="eyebrow">Add Member or Guest</span>
           <div className="grid grid-cols-1 sm:grid-cols-12 gap-2">
             <div className="sm:col-span-6">
@@ -95,7 +95,7 @@ export function MemberManagerModal({
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Name (e.g. Rahul Sharma)"
                 required
-                className="w-full rounded-[--radius] border border-[--color-line] bg-[--color-canvas] px-3 py-2 text-xs text-[--color-text] outline-none focus:border-[--color-brass]"
+                className="w-full rounded-[var(--radius)] border border-[var(--color-line)] bg-[var(--color-canvas)] px-3 py-2 text-xs text-[var(--color-text)] outline-none focus:border-[var(--color-brass)]"
               />
             </div>
             <div className="sm:col-span-6">
@@ -103,13 +103,13 @@ export function MemberManagerModal({
                 value={tag}
                 onChange={(e) => setTag(e.target.value)}
                 placeholder="Optional tag (e.g. Dev, Roomie)"
-                className="w-full rounded-[--radius] border border-[--color-line] bg-[--color-canvas] px-3 py-2 text-xs text-[--color-text] outline-none focus:border-[--color-brass]"
+                className="w-full rounded-[var(--radius)] border border-[var(--color-line)] bg-[var(--color-canvas)] px-3 py-2 text-xs text-[var(--color-text)] outline-none focus:border-[var(--color-brass)]"
               />
             </div>
           </div>
 
           <div className="flex items-center justify-between pt-1">
-            <label className="inline-flex items-center gap-2 text-xs text-[--color-muted] cursor-pointer select-none">
+            <label className="inline-flex items-center gap-2 text-xs text-[var(--color-muted)] cursor-pointer select-none">
               <input
                 type="checkbox"
                 checked={isGuest}
@@ -122,7 +122,7 @@ export function MemberManagerModal({
             <button
               type="submit"
               disabled={!name.trim()}
-              className="bg-[--color-brass] px-4 py-1.5 rounded-[--radius] text-xs font-semibold text-[#0b0e0d] transition-opacity hover:opacity-90 disabled:opacity-40"
+              className="bg-[var(--color-brass)] px-4 py-1.5 rounded-[var(--radius)] text-xs font-semibold text-[#0b0e0d] transition-opacity hover:opacity-90 disabled:opacity-40"
             >
               + Add to Group
             </button>
@@ -139,34 +139,34 @@ export function MemberManagerModal({
               return (
                 <div
                   key={m.id}
-                  className="p-3 rounded-[--radius] border border-[--color-brass] bg-[--color-canvas] space-y-2"
+                  className="p-3 rounded-[var(--radius)] border border-[var(--color-brass)] bg-[var(--color-canvas)] space-y-2"
                 >
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     <input
                       value={editName}
                       onChange={(e) => setEditName(e.target.value)}
                       placeholder="Display Name"
-                      className="rounded border border-[--color-line] bg-[--color-surface] px-2.5 py-1.5 text-xs text-[--color-text] outline-none"
+                      className="rounded border border-[var(--color-line)] bg-[var(--color-surface)] px-2.5 py-1.5 text-xs text-[var(--color-text)] outline-none"
                     />
                     <input
                       value={editTag}
                       onChange={(e) => setEditTag(e.target.value)}
                       placeholder="Free-text Tag"
-                      className="rounded border border-[--color-line] bg-[--color-surface] px-2.5 py-1.5 text-xs text-[--color-text] outline-none"
+                      className="rounded border border-[var(--color-line)] bg-[var(--color-surface)] px-2.5 py-1.5 text-xs text-[var(--color-text)] outline-none"
                     />
                   </div>
                   <div className="flex justify-end gap-2 text-xs">
                     <button
                       type="button"
                       onClick={() => saveEdit(m.id)}
-                      className="bg-[--color-brass] px-3 py-1 rounded text-xs font-semibold text-[#0b0e0d]"
+                      className="bg-[var(--color-brass)] px-3 py-1 rounded text-xs font-semibold text-[#0b0e0d]"
                     >
                       Save
                     </button>
                     <button
                       type="button"
                       onClick={() => setEditingId(null)}
-                      className="text-[--color-muted] hover:text-[--color-text] px-2 py-1"
+                      className="text-[var(--color-muted)] hover:text-[var(--color-text)] px-2 py-1"
                     >
                       Cancel
                     </button>
@@ -178,24 +178,24 @@ export function MemberManagerModal({
             return (
               <div
                 key={m.id}
-                className="flex items-center justify-between p-2.5 rounded-[--radius] border border-[--color-line] bg-[--color-canvas] text-xs hover:border-[--color-line-bright]"
+                className="flex items-center justify-between p-2.5 rounded-[var(--radius)] border border-[var(--color-line)] bg-[var(--color-canvas)] text-xs hover:border-[var(--color-line-bright)]"
               >
                 <div className="flex items-center gap-2 min-w-0">
-                  <span className="font-medium text-[--color-text] truncate">
+                  <span className="font-medium text-[var(--color-text)] truncate">
                     {m.displayName}
                   </span>
                   {isOwner && (
-                    <span className="text-[9px] uppercase font-bold tracking-wider px-1.5 py-0.2 rounded bg-[--color-brass-dim] text-[--color-brass]">
+                    <span className="text-[9px] uppercase font-bold tracking-wider px-1.5 py-0.2 rounded bg-[var(--color-brass-dim)] text-[var(--color-brass)]">
                       Owner
                     </span>
                   )}
                   {m.isGuest && (
-                    <span className="text-[9px] uppercase font-bold tracking-wider px-1.5 py-0.2 rounded bg-[--color-surface-raised] text-[--color-faint]">
+                    <span className="text-[9px] uppercase font-bold tracking-wider px-1.5 py-0.2 rounded bg-[var(--color-surface-raised)] text-[var(--color-faint)]">
                       Guest
                     </span>
                   )}
                   {m.tag && (
-                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-[--color-surface-raised] text-[--color-muted] border border-[--color-line]">
+                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-[var(--color-surface-raised)] text-[var(--color-muted)] border border-[var(--color-line)]">
                       #{m.tag}
                     </span>
                   )}
@@ -205,12 +205,12 @@ export function MemberManagerModal({
                   <button
                     type="button"
                     onClick={() => startEdit(m)}
-                    className="text-[--color-muted] hover:text-[--color-brass] transition-colors"
+                    className="text-[var(--color-muted)] hover:text-[var(--color-brass)] transition-colors"
                     title="Rename or update tag"
                   >
                     Rename
                   </button>
-                  <span className="text-[--color-line-bright]">·</span>
+                  <span className="text-[var(--color-line-bright)]">·</span>
                   <button
                     type="button"
                     onClick={() => {
@@ -218,7 +218,7 @@ export function MemberManagerModal({
                         onRemoveMember(m.id);
                       }
                     }}
-                    className="text-[--color-debit] hover:opacity-80 transition-opacity"
+                    className="text-[var(--color-debit)] hover:opacity-80 transition-opacity"
                     title="Remove member"
                   >
                     Remove
@@ -230,11 +230,11 @@ export function MemberManagerModal({
         </div>
 
         {/* Modal Footer */}
-        <div className="pt-4 border-t border-[--color-line] flex justify-end">
+        <div className="pt-4 border-t border-[var(--color-line)] flex justify-end">
           <button
             onClick={onClose}
             type="button"
-            className="bg-[--color-surface-raised] border border-[--color-line] hover:border-[--color-line-bright] text-[--color-text] px-4 py-2 rounded-[--radius] text-xs font-medium"
+            className="bg-[var(--color-surface-raised)] border border-[var(--color-line)] hover:border-[var(--color-line-bright)] text-[var(--color-text)] px-4 py-2 rounded-[var(--radius)] text-xs font-medium"
           >
             Done
           </button>

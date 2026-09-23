@@ -92,6 +92,23 @@ export default function GroupPage({ params }: { params: Promise<{ groupId: strin
     retry: false,
   });
 
+  // On-device groups (created while the backend was unreachable) carry
+  // their name in localStorage until the backend syncs.
+  useEffect(() => {
+    if (isSplitOpsFallback) return;
+    try {
+      const raw = localStorage.getItem("ggsplitops_custom_groups");
+      const list = raw ? (JSON.parse(raw) as { id: string; name: string }[]) : [];
+      const found = list.find((g) => g.id === groupId);
+      if (found) {
+        setGroupName(found.name);
+        setEditGroupNameInput(found.name);
+      }
+    } catch {
+      // Ignore
+    }
+  }, [groupId, isSplitOpsFallback]);
+
   // Sync API data if present
   useEffect(() => {
     if (groupQuery.data?.group?.name) {
@@ -261,16 +278,16 @@ export default function GroupPage({ params }: { params: Promise<{ groupId: strin
   return (
     <main className="mx-auto max-w-2xl px-4 py-6 sm:px-6 md:py-10">
       {/* Top Header */}
-      <header className="flex items-center justify-between pb-4 border-b border-[--color-line]">
+      <header className="flex items-center justify-between pb-4 border-b border-[var(--color-line)]">
         <div className="flex items-center gap-3">
           <Link
             href="/groups"
-            className="text-xs font-semibold uppercase tracking-wider text-[--color-muted] hover:text-[--color-text] transition-colors"
+            className="text-xs font-semibold uppercase tracking-wider text-[var(--color-muted)] hover:text-[var(--color-text)] transition-colors"
           >
             ← Groups
           </Link>
-          <span className="text-[--color-line-bright]">/</span>
-          <span className="text-sm font-medium text-[--color-text] truncate max-w-[140px] sm:max-w-xs">
+          <span className="text-[var(--color-line-bright)]">/</span>
+          <span className="text-sm font-medium text-[var(--color-text)] truncate max-w-[140px] sm:max-w-xs">
             {groupName}
           </span>
         </div>
@@ -280,18 +297,18 @@ export default function GroupPage({ params }: { params: Promise<{ groupId: strin
           <Link
             href="/login"
             title="Click to switch active profile"
-            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[--color-surface] border border-[--color-brass]/40 hover:border-[--color-brass] text-xs text-[--color-text] transition-colors"
+            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[var(--color-surface)] border border-[var(--color-brass)]/40 hover:border-[var(--color-brass)] text-xs text-[var(--color-text)] transition-colors"
           >
-            <span className="w-2 h-2 rounded-full bg-[--color-credit]" />
+            <span className="w-2 h-2 rounded-full bg-[var(--color-credit)]" />
             <span className="truncate max-w-[100px]">{currentUser?.name || "Zubair"}</span>
-            <span className="text-[10px] text-[--color-brass] underline font-mono">Switch</span>
+            <span className="text-[10px] text-[var(--color-brass)] underline font-mono">Switch</span>
           </Link>
 
           <button
             onClick={handleExportExcel}
             type="button"
             title="Export to Excel spreadsheet with live fraction formulas"
-            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-[--radius] bg-[--color-surface-raised] border border-[--color-line] hover:border-[--color-brass] text-xs font-medium text-[--color-text] hover:text-[--color-brass] transition-colors"
+            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-[var(--radius)] bg-[var(--color-surface-raised)] border border-[var(--color-line)] hover:border-[var(--color-brass)] text-xs font-medium text-[var(--color-text)] hover:text-[var(--color-brass)] transition-colors"
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
@@ -314,39 +331,39 @@ export default function GroupPage({ params }: { params: Promise<{ groupId: strin
                 value={editGroupNameInput}
                 onChange={(e) => setEditGroupNameInput(e.target.value)}
                 autoFocus
-                className="text-xl sm:text-2xl font-medium tracking-tight rounded border border-[--color-brass] bg-[--color-surface] px-2 py-1 text-[--color-text] outline-none"
+                className="text-xl sm:text-2xl font-medium tracking-tight rounded border border-[var(--color-brass)] bg-[var(--color-surface)] px-2 py-1 text-[var(--color-text)] outline-none"
               />
               <button
                 type="submit"
-                className="bg-[--color-brass] px-3 py-1 rounded text-xs font-semibold text-[#0b0e0d]"
+                className="bg-[var(--color-brass)] px-3 py-1 rounded text-xs font-semibold text-[#0b0e0d]"
               >
                 Save
               </button>
               <button
                 type="button"
                 onClick={() => setIsEditingGroupName(false)}
-                className="text-xs text-[--color-muted] hover:text-[--color-text]"
+                className="text-xs text-[var(--color-muted)] hover:text-[var(--color-text)]"
               >
                 Cancel
               </button>
             </form>
           ) : (
             <div className="flex items-center gap-2">
-              <h1 className="text-2xl sm:text-3xl font-medium tracking-tight text-[--color-text]">
+              <h1 className="text-2xl sm:text-3xl font-medium tracking-tight text-[var(--color-text)]">
                 {groupName}
               </h1>
               <button
                 onClick={() => setIsEditingGroupName(true)}
                 title="Rename group (available to all members)"
-                className="text-xs text-[--color-muted] hover:text-[--color-brass] p-1 rounded hover:bg-[--color-surface-raised]"
+                className="text-xs text-[var(--color-muted)] hover:text-[var(--color-brass)] p-1 rounded hover:bg-[var(--color-surface-raised)]"
               >
                 ✎ Rename
               </button>
             </div>
           )}
 
-          <p className="text-xs text-[--color-muted] mt-1">
-            Equal permissions for all members · Currency: <strong className="text-[--color-brass]">INR (₹)</strong>
+          <p className="text-xs text-[var(--color-muted)] mt-1">
+            Equal permissions for all members · Currency: <strong className="text-[var(--color-brass)]">INR (₹)</strong>
           </p>
         </div>
 
@@ -358,7 +375,7 @@ export default function GroupPage({ params }: { params: Promise<{ groupId: strin
               setIsExpenseModalOpen(true);
             }}
             type="button"
-            className="bg-[--color-brass] px-3.5 py-1.5 rounded-[--radius] text-xs font-semibold text-[#0b0e0d] transition-opacity hover:opacity-90 active:scale-95 flex items-center gap-1.5"
+            className="bg-[var(--color-brass)] px-3.5 py-1.5 rounded-[var(--radius)] text-xs font-semibold text-[#0b0e0d] transition-opacity hover:opacity-90 active:scale-95 flex items-center gap-1.5"
           >
             <span>+ Add Expense</span>
           </button>
@@ -366,7 +383,7 @@ export default function GroupPage({ params }: { params: Promise<{ groupId: strin
           <button
             onClick={() => setIsMemberManagerOpen(true)}
             type="button"
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[--radius] bg-[--color-surface-raised] border border-[--color-line] hover:border-[--color-brass] text-xs font-medium text-[--color-text] transition-colors"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[var(--radius)] bg-[var(--color-surface-raised)] border border-[var(--color-line)] hover:border-[var(--color-brass)] text-xs font-medium text-[var(--color-text)] transition-colors"
           >
             <span>Members ({members.length})</span>
             <span>⚙</span>
@@ -382,20 +399,20 @@ export default function GroupPage({ params }: { params: Promise<{ groupId: strin
             return (
               <span
                 key={m.id}
-                className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-[--radius] text-xs border ${
+                className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-[var(--radius)] text-xs border ${
                   isOwner
-                    ? "border-[--color-brass] bg-[--color-brass-dim]/30 text-[--color-text] font-medium"
-                    : "border-[--color-line] bg-[--color-surface] text-[--color-muted]"
+                    ? "border-[var(--color-brass)] bg-[var(--color-brass-dim)]/30 text-[var(--color-text)] font-medium"
+                    : "border-[var(--color-line)] bg-[var(--color-surface)] text-[var(--color-muted)]"
                 }`}
               >
                 <span>{m.displayName}</span>
                 {isOwner && (
-                  <span className="text-[9px] uppercase font-bold px-1.5 py-0.2 rounded bg-[--color-brass] text-[#0b0e0d]">
+                  <span className="text-[9px] uppercase font-bold px-1.5 py-0.2 rounded bg-[var(--color-brass)] text-[#0b0e0d]">
                     Owner
                   </span>
                 )}
                 {m.tag && (
-                  <span className="text-[9px] px-1.5 py-0.2 rounded bg-[--color-surface-raised] text-[--color-faint]">
+                  <span className="text-[9px] px-1.5 py-0.2 rounded bg-[var(--color-surface-raised)] text-[var(--color-faint)]">
                     #{m.tag}
                   </span>
                 )}
@@ -420,19 +437,19 @@ export default function GroupPage({ params }: { params: Promise<{ groupId: strin
       </div>
 
       {/* Net Balances Section */}
-      <section className="mt-8 border-t border-[--color-line] pt-6">
+      <section className="mt-8 border-t border-[var(--color-line)] pt-6">
         <div className="flex items-baseline justify-between">
           <h2 className="eyebrow">Net Balances (₹ INR)</h2>
-          <span className="text-[--color-faint] text-xs font-mono">Simplified</span>
+          <span className="text-[var(--color-faint)] text-xs font-mono">Simplified</span>
         </div>
 
-        <div className="mt-2 divide-y divide-[--color-line]">
+        <div className="mt-2 divide-y divide-[var(--color-line)]">
           {computedBalances.map((b) => (
             <div key={`${b.memberId}-${b.currency}`} className="ledger-row">
               <div className="flex items-center gap-2">
-                <span className="text-sm font-medium text-[--color-text]">{b.displayName}</span>
+                <span className="text-sm font-medium text-[var(--color-text)]">{b.displayName}</span>
                 {b.displayName.toLowerCase() === "zubair" && (
-                  <span className="text-[9px] uppercase font-bold px-1.5 py-0.2 rounded bg-[--color-brass] text-[#0b0e0d]">
+                  <span className="text-[9px] uppercase font-bold px-1.5 py-0.2 rounded bg-[var(--color-brass)] text-[#0b0e0d]">
                     Owner
                   </span>
                 )}
@@ -440,7 +457,7 @@ export default function GroupPage({ params }: { params: Promise<{ groupId: strin
               <span className="ledger-leader" aria-hidden="true" />
               <div className="text-right">
                 <Amount amount={b.amount} currency={b.currency} />
-                <span className="text-[--color-faint] ml-2 text-xs">
+                <span className="text-[var(--color-faint)] ml-2 text-xs">
                   {b.amount.startsWith("-") ? "owes" : parseFloat(b.amount) > 0 ? "is owed" : "settled"}
                 </span>
               </div>
@@ -451,20 +468,20 @@ export default function GroupPage({ params }: { params: Promise<{ groupId: strin
 
       {/* Settle Up Section */}
       {balancesQuery.data && balancesQuery.data.transfers.length > 0 && (
-        <section className="border-[--color-brass-dim] bg-[--color-surface] mt-8 rounded-[--radius-lg] border p-4 sm:p-5">
-          <h2 className="eyebrow text-[--color-brass]">Settle Up In One Payment</h2>
-          <p className="text-[--color-muted] mt-1 text-xs sm:text-sm">
+        <section className="border-[var(--color-brass-dim)] bg-[var(--color-surface)] mt-8 rounded-[var(--radius-lg)] border p-4 sm:p-5">
+          <h2 className="eyebrow text-[var(--color-brass)]">Settle Up In One Payment</h2>
+          <p className="text-[var(--color-muted)] mt-1 text-xs sm:text-sm">
             {balancesQuery.data.transfers.length === 1
               ? "1 payment clears the entire group."
               : `${balancesQuery.data.transfers.length} payments clear the entire group.`}
           </p>
-          <div className="mt-3 divide-y divide-[--color-line]">
+          <div className="mt-3 divide-y divide-[var(--color-line)]">
             {balancesQuery.data.transfers.map((t, i) => (
               <div key={i} className="ledger-row py-2.5">
                 <span className="text-sm">
-                  <strong className="text-[--color-text]">{t.fromName}</strong>{" "}
-                  <span className="text-[--color-faint]">pays</span>{" "}
-                  <strong className="text-[--color-text]">{t.toName}</strong>
+                  <strong className="text-[var(--color-text)]">{t.fromName}</strong>{" "}
+                  <span className="text-[var(--color-faint)]">pays</span>{" "}
+                  <strong className="text-[var(--color-text)]">{t.toName}</strong>
                 </span>
                 <span className="ledger-leader" aria-hidden="true" />
                 <span className="flex items-center gap-2 sm:gap-3">
@@ -480,7 +497,7 @@ export default function GroupPage({ params }: { params: Promise<{ groupId: strin
                       })
                     }
                     disabled={settle.isPending}
-                    className="border border-[--color-line-bright] hover:border-[--color-brass] hover:text-[--color-brass] rounded-[--radius-sm] px-2.5 py-1 text-xs transition-colors disabled:opacity-40"
+                    className="border border-[var(--color-line-bright)] hover:border-[var(--color-brass)] hover:text-[var(--color-brass)] rounded-[var(--radius-sm)] px-2.5 py-1 text-xs transition-colors disabled:opacity-40"
                   >
                     Record
                   </button>
@@ -492,11 +509,11 @@ export default function GroupPage({ params }: { params: Promise<{ groupId: strin
       )}
 
       {/* Expense History with Search & Filter Section */}
-      <section className="mt-10 border-t border-[--color-line] pt-6">
+      <section className="mt-10 border-t border-[var(--color-line)] pt-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2">
           <div>
             <h2 className="eyebrow">Expense History</h2>
-            <p className="text-xs text-[--color-muted]">
+            <p className="text-xs text-[var(--color-muted)]">
               Showing {filteredExpenses.length} of {expensesList.length} expenses
             </p>
           </div>
@@ -506,24 +523,24 @@ export default function GroupPage({ params }: { params: Promise<{ groupId: strin
               onClick={() => setIsClearHistoryModalOpen(true)}
               type="button"
               disabled={expensesList.length === 0}
-              className="text-xs text-[--color-debit] hover:underline font-medium disabled:opacity-40"
+              className="text-xs text-[var(--color-debit)] hover:underline font-medium disabled:opacity-40"
             >
               🗑 Clear History
             </button>
-            <span className="text-[--color-line-bright]">|</span>
+            <span className="text-[var(--color-line-bright)]">|</span>
             <button
               onClick={() => {
                 setModalExpense(null);
                 setIsExpenseModalOpen(true);
               }}
-              className="text-xs text-[--color-brass] hover:underline font-semibold"
+              className="text-xs text-[var(--color-brass)] hover:underline font-semibold"
             >
               + New Expense
             </button>
-            <span className="text-[--color-line-bright]">|</span>
+            <span className="text-[var(--color-line-bright)]">|</span>
             <button
               onClick={handleExportExcel}
-              className="text-xs text-[--color-muted] hover:text-[--color-text] flex items-center gap-1"
+              className="text-xs text-[var(--color-muted)] hover:text-[var(--color-text)] flex items-center gap-1"
             >
               <span>Excel Export</span>
               <span>↓</span>
@@ -532,20 +549,20 @@ export default function GroupPage({ params }: { params: Promise<{ groupId: strin
         </div>
 
         {/* Search & Filter Toolbar */}
-        <div className="mt-3 p-3 rounded-[--radius-lg] border border-[--color-line] bg-[--color-surface] space-y-2.5">
+        <div className="mt-3 p-3 rounded-[var(--radius-lg)] border border-[var(--color-line)] bg-[var(--color-surface)] space-y-2.5">
           {/* Search Bar */}
           <div className="relative">
-            <span className="absolute left-3 top-2.5 text-xs text-[--color-muted]">🔍</span>
+            <span className="absolute left-3 top-2.5 text-xs text-[var(--color-muted)]">🔍</span>
             <input
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search expenses by title, payer or participant…"
-              className="w-full pl-8 pr-8 py-2 rounded-[--radius] border border-[--color-line] bg-[--color-canvas] text-xs text-[--color-text] outline-none focus:border-[--color-brass]"
+              className="w-full pl-8 pr-8 py-2 rounded-[var(--radius)] border border-[var(--color-line)] bg-[var(--color-canvas)] text-xs text-[var(--color-text)] outline-none focus:border-[var(--color-brass)]"
             />
             {searchQuery && (
               <button
                 onClick={() => setSearchQuery("")}
-                className="absolute right-2.5 top-2 text-xs text-[--color-muted] hover:text-[--color-text]"
+                className="absolute right-2.5 top-2 text-xs text-[var(--color-muted)] hover:text-[var(--color-text)]"
               >
                 ✕
               </button>
@@ -555,11 +572,11 @@ export default function GroupPage({ params }: { params: Promise<{ groupId: strin
           {/* Member & Date Dropdowns */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             <div className="flex items-center gap-2 text-xs">
-              <span className="text-[--color-muted] shrink-0">Member:</span>
+              <span className="text-[var(--color-muted)] shrink-0">Member:</span>
               <select
                 value={selectedMemberFilter}
                 onChange={(e) => setSelectedMemberFilter(e.target.value)}
-                className="flex-1 rounded border border-[--color-line] bg-[--color-canvas] px-2 py-1.5 text-xs text-[--color-text] outline-none"
+                className="flex-1 rounded border border-[var(--color-line)] bg-[var(--color-canvas)] px-2 py-1.5 text-xs text-[var(--color-text)] outline-none"
               >
                 <option value="ALL">All Members</option>
                 {members.map((m) => (
@@ -571,11 +588,11 @@ export default function GroupPage({ params }: { params: Promise<{ groupId: strin
             </div>
 
             <div className="flex items-center gap-2 text-xs">
-              <span className="text-[--color-muted] shrink-0">Date:</span>
+              <span className="text-[var(--color-muted)] shrink-0">Date:</span>
               <select
                 value={dateFilter}
-                onChange={(e) => setDateFilter(e.target.value as any)}
-                className="flex-1 rounded border border-[--color-line] bg-[--color-canvas] px-2 py-1.5 text-xs text-[--color-text] outline-none"
+                onChange={(e) => setDateFilter(e.target.value as "ALL" | "TODAY" | "WEEK" | "MONTH")}
+                className="flex-1 rounded border border-[var(--color-line)] bg-[var(--color-canvas)] px-2 py-1.5 text-xs text-[var(--color-text)] outline-none"
               >
                 <option value="ALL">All Time</option>
                 <option value="TODAY">Today</option>
@@ -587,10 +604,10 @@ export default function GroupPage({ params }: { params: Promise<{ groupId: strin
         </div>
 
         {/* Expenses List */}
-        <div className="mt-4 divide-y divide-[--color-line]">
+        <div className="mt-4 divide-y divide-[var(--color-line)]">
           {filteredExpenses.length === 0 && (
-            <div className="py-8 text-center border border-dashed border-[--color-line] rounded-[--radius-lg] my-2">
-              <p className="text-sm text-[--color-muted]">No matching expenses found.</p>
+            <div className="py-8 text-center border border-dashed border-[var(--color-line)] rounded-[var(--radius-lg)] my-2">
+              <p className="text-sm text-[var(--color-muted)]">No matching expenses found.</p>
               {(searchQuery || selectedMemberFilter !== "ALL" || dateFilter !== "ALL") && (
                 <button
                   onClick={() => {
@@ -598,7 +615,7 @@ export default function GroupPage({ params }: { params: Promise<{ groupId: strin
                     setSelectedMemberFilter("ALL");
                     setDateFilter("ALL");
                   }}
-                  className="mt-2 text-xs text-[--color-brass] hover:underline"
+                  className="mt-2 text-xs text-[var(--color-brass)] hover:underline"
                 >
                   Clear all filters
                 </button>
@@ -623,17 +640,25 @@ export default function GroupPage({ params }: { params: Promise<{ groupId: strin
             const splitBadge = e.splitMethod || "EQUAL";
 
             return (
-              <div key={e.id} className="py-3.5 space-y-1.5 hover:bg-[--color-surface]/50 -mx-2 px-2 rounded-[--radius] transition-colors">
+              <div key={e.id} className="py-3.5 space-y-1.5 hover:bg-[var(--color-surface)]/50 -mx-2 px-2 rounded-[var(--radius)] transition-colors">
                 <div className="flex items-start justify-between gap-2">
                   <div>
                     <div className="flex items-center gap-2">
-                      <span className="text-sm font-medium text-[--color-text]">{e.description}</span>
-                      <span className="text-[10px] uppercase font-bold tracking-wider px-1.5 py-0.2 rounded bg-[--color-surface-raised] text-[--color-brass] border border-[--color-line]">
+                      <span className="text-sm font-medium text-[var(--color-text)]">{e.description}</span>
+                      <span className="text-[10px] uppercase font-bold tracking-wider px-1.5 py-0.2 rounded bg-[var(--color-surface-raised)] text-[var(--color-brass)] border border-[var(--color-line)]">
                         {splitBadge}
                       </span>
+                      {e.transport && (
+                        <span
+                          className="text-[10px] font-bold tracking-wider px-1.5 py-0.2 rounded bg-[var(--color-surface-raised)] text-[var(--color-credit)] border border-[var(--color-line)]"
+                          data-testid={`expense-transport-${e.id}`}
+                        >
+                          {e.transport.mode === "CAB" ? "🚕" : "🏍️"} +₹{e.transport.fare}
+                        </span>
+                      )}
                     </div>
 
-                    <div className="text-xs text-[--color-muted] mt-0.5 flex flex-wrap items-center gap-2">
+                    <div className="text-xs text-[var(--color-muted)] mt-0.5 flex flex-wrap items-center gap-2">
                       <span suppressHydrationWarning>{formattedDate}</span>
                       <span>·</span>
                       {e.payers && e.payers.length > 1 ? (
@@ -656,27 +681,27 @@ export default function GroupPage({ params }: { params: Promise<{ groupId: strin
                         setIsExpenseModalOpen(true);
                       }}
                       title="Edit expense (available to all members)"
-                      className="text-xs text-[--color-muted] hover:text-[--color-brass] p-1.5 rounded hover:bg-[--color-surface-raised]"
+                      className="text-xs text-[var(--color-muted)] hover:text-[var(--color-brass)] p-1.5 rounded hover:bg-[var(--color-surface-raised)]"
                     >
                       ✎
                     </button>
                     <button
                       onClick={() => setDeleteExpenseTarget(e)}
                       title="Delete expense (available to all members)"
-                      className="text-xs text-[--color-debit] hover:opacity-80 p-1.5 rounded hover:bg-[--color-surface-raised]"
+                      className="text-xs text-[var(--color-debit)] hover:opacity-80 p-1.5 rounded hover:bg-[var(--color-surface-raised)]"
                     >
                       ✕
                     </button>
                   </div>
                 </div>
 
-                <div className="flex flex-wrap items-center justify-between text-xs text-[--color-faint] gap-1 pt-0.5">
+                <div className="flex flex-wrap items-center justify-between text-xs text-[var(--color-faint)] gap-1 pt-0.5">
                   <span>
                     Split among {partCount} participants ·{" "}
                     {splitBadge === "EQUAL" ? `1/${partCount} each (₹${(parseFloat(e.amount) / partCount).toFixed(2)})` : "Custom split shares"}
                   </span>
                   {/* User requirement: Show "last edited by <name> at <time>" on every expense */}
-                  <span suppressHydrationWarning className="text-[11px] text-[--color-brass]/80 font-mono">
+                  <span suppressHydrationWarning className="text-[11px] text-[var(--color-brass)]/80 font-mono">
                     Last edited by {editor} at {editTime}
                   </span>
                 </div>
@@ -711,10 +736,10 @@ export default function GroupPage({ params }: { params: Promise<{ groupId: strin
       {/* Confirm Delete Modal */}
       {deleteExpenseTarget && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-xs">
-          <div className="w-full max-w-sm rounded-[--radius-lg] border border-[--color-debit-dim] bg-[--color-surface] p-5 shadow-2xl space-y-4">
+          <div className="w-full max-w-sm rounded-[var(--radius-lg)] border border-[var(--color-debit-dim)] bg-[var(--color-surface)] p-5 shadow-2xl space-y-4">
             <div>
-              <h3 className="text-base font-semibold text-[--color-text]">Delete Expense?</h3>
-              <p className="text-xs text-[--color-muted] mt-1">
+              <h3 className="text-base font-semibold text-[var(--color-text)]">Delete Expense?</h3>
+              <p className="text-xs text-[var(--color-muted)] mt-1">
                 Are you sure you want to remove &ldquo;{deleteExpenseTarget.description}&rdquo; (₹
                 {deleteExpenseTarget.amount})? This will immediately recalculate all member balances.
               </p>
@@ -723,14 +748,14 @@ export default function GroupPage({ params }: { params: Promise<{ groupId: strin
               <button
                 type="button"
                 onClick={() => setDeleteExpenseTarget(null)}
-                className="px-3 py-1.5 rounded text-xs text-[--color-muted] hover:text-[--color-text]"
+                className="px-3 py-1.5 rounded text-xs text-[var(--color-muted)] hover:text-[var(--color-text)]"
               >
                 Cancel
               </button>
               <button
                 type="button"
                 onClick={handleConfirmDelete}
-                className="bg-[--color-debit] px-4 py-1.5 rounded text-xs font-semibold text-white transition-opacity hover:opacity-90"
+                className="bg-[var(--color-debit)] px-4 py-1.5 rounded text-xs font-semibold text-white transition-opacity hover:opacity-90"
               >
                 Confirm Delete
               </button>
@@ -742,10 +767,10 @@ export default function GroupPage({ params }: { params: Promise<{ groupId: strin
       {/* Confirm Clear All History Modal */}
       {isClearHistoryModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-xs">
-          <div className="w-full max-w-sm rounded-[--radius-lg] border border-[--color-debit-dim] bg-[--color-surface] p-5 shadow-2xl space-y-4">
+          <div className="w-full max-w-sm rounded-[var(--radius-lg)] border border-[var(--color-debit-dim)] bg-[var(--color-surface)] p-5 shadow-2xl space-y-4">
             <div>
-              <h3 className="text-base font-semibold text-[--color-text]">Clear All Expense History?</h3>
-              <p className="text-xs text-[--color-muted] mt-1">
+              <h3 className="text-base font-semibold text-[var(--color-text)]">Clear All Expense History?</h3>
+              <p className="text-xs text-[var(--color-muted)] mt-1">
                 Are you sure you want to remove all {expensesList.length} expenses? All member balances will be reset to zero.
               </p>
             </div>
@@ -753,7 +778,7 @@ export default function GroupPage({ params }: { params: Promise<{ groupId: strin
               <button
                 type="button"
                 onClick={() => setIsClearHistoryModalOpen(false)}
-                className="px-3 py-1.5 rounded text-xs text-[--color-muted] hover:text-[--color-text]"
+                className="px-3 py-1.5 rounded text-xs text-[var(--color-muted)] hover:text-[var(--color-text)]"
               >
                 Cancel
               </button>
@@ -764,7 +789,7 @@ export default function GroupPage({ params }: { params: Promise<{ groupId: strin
                   setIsClearHistoryModalOpen(false);
                   refresh();
                 }}
-                className="bg-[--color-debit] px-4 py-1.5 rounded text-xs font-semibold text-white transition-opacity hover:opacity-90"
+                className="bg-[var(--color-debit)] px-4 py-1.5 rounded text-xs font-semibold text-white transition-opacity hover:opacity-90"
               >
                 Yes, Clear All
               </button>

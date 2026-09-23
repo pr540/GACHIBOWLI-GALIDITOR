@@ -111,6 +111,13 @@ function ExpenseForm({
 
   const numAmount = parseFloat(amount) || 0;
 
+  // Transport add-on: a Cab / Bike fare merges into the bill total so the
+  // selected fare is split exactly like the rest of the expense.
+  const [transportMode, setTransportMode] = useState<"NONE" | "CAB" | "BIKE">("NONE");
+  const [transportFare, setTransportFare] = useState("");
+  const fareAmount = transportMode === "NONE" ? 0 : parseFloat(transportFare) || 0;
+  const billTotal = Math.round((numAmount + fareAmount) * 100) / 100;
+
   // Real-time calculation & validation of payers
   const currentPayers: PayerShare[] = isMultiPayer
     ? members
@@ -124,11 +131,11 @@ function ExpenseForm({
         {
           memberId: singlePayerId,
           displayName: members.find((m) => m.id === singlePayerId)?.displayName || "Payer",
-          amount: numAmount.toFixed(2),
+          amount: billTotal.toFixed(2),
         },
       ];
 
-  const payerValidation = validatePayers(numAmount, currentPayers);
+  const payerValidation = validatePayers(billTotal, currentPayers);
 
   // Participant Inputs preparation
   const participantShareInputs: ParticipantShareInput[] = members
@@ -140,7 +147,7 @@ function ExpenseForm({
     }));
 
   const splitValidation = calculateAndValidateSplits(
-    numAmount,
+    billTotal,
     splitMethod,
     participantShareInputs
   );
@@ -191,7 +198,8 @@ function ExpenseForm({
     onSave({
       id: expense?.id || `exp-${Date.now()}`,
       description: description.trim(),
-      amount: numAmount.toFixed(2),
+      amount: billTotal.toFixed(2),
+      transport: transportMode === "NONE" ? undefined : { mode: transportMode, fare: fareAmount.toFixed(2) },
       currency: "INR",
       payerId: primaryPayer.memberId,
       payerName: isMultiPayer ? `${currentPayers.length} People` : primaryPayer.displayName,
@@ -208,21 +216,21 @@ function ExpenseForm({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/75 backdrop-blur-xs">
-      <div className="w-full max-w-xl rounded-[--radius-lg] border border-[--color-line] bg-[--color-surface] p-4 sm:p-6 shadow-2xl max-h-[92vh] flex flex-col">
+      <div className="w-full max-w-xl rounded-[var(--radius-lg)] border border-[var(--color-line)] bg-[var(--color-surface)] p-4 sm:p-6 shadow-2xl max-h-[92vh] flex flex-col">
         {/* Header */}
-        <div className="flex items-center justify-between pb-3 border-b border-[--color-line]">
+        <div className="flex items-center justify-between pb-3 border-b border-[var(--color-line)]">
           <div>
-            <h2 className="text-lg font-semibold text-[--color-text]">
+            <h2 className="text-lg font-semibold text-[var(--color-text)]">
               {isEditMode ? "Edit Expense" : "Add Expense"}
             </h2>
-            <p className="text-xs text-[--color-muted] mt-0.5">
-              Acting as <strong className="text-[--color-brass]">{editorName}</strong> · Currency: INR (₹)
+            <p className="text-xs text-[var(--color-muted)] mt-0.5">
+              Acting as <strong className="text-[var(--color-brass)]">{editorName}</strong> · Currency: INR (₹)
             </p>
           </div>
           <button
             onClick={onClose}
             type="button"
-            className="text-[--color-muted] hover:text-[--color-text] text-sm p-1.5 rounded hover:bg-[--color-surface-raised]"
+            className="text-[var(--color-muted)] hover:text-[var(--color-text)] text-sm p-1.5 rounded hover:bg-[var(--color-surface-raised)]"
           >
             ✕
           </button>
@@ -232,7 +240,7 @@ function ExpenseForm({
           {/* Title & Amount & Date */}
           <div className="space-y-3">
             <div>
-              <label className="block text-xs font-medium text-[--color-muted] mb-1">
+              <label className="block text-xs font-medium text-[var(--color-muted)] mb-1">
                 Title / Description
               </label>
               <input
@@ -241,17 +249,18 @@ function ExpenseForm({
                 placeholder="e.g. Dinner at Paradise, Groceries, Fuel"
                 required
                 autoFocus
-                className="w-full rounded-[--radius] border border-[--color-line] bg-[--color-canvas] px-3 py-2 text-sm text-[--color-text] outline-none focus:border-[--color-brass]"
+                data-testid="expense-title"
+                className="w-full rounded-[var(--radius)] border border-[var(--color-line)] bg-[var(--color-canvas)] px-3 py-2 text-sm text-[var(--color-text)] outline-none focus:border-[var(--color-brass)]"
               />
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <label className="block text-xs font-medium text-[--color-muted] mb-1">
+                <label className="block text-xs font-medium text-[var(--color-muted)] mb-1">
                   Amount (₹ INR)
                 </label>
                 <div className="relative">
-                  <span className="absolute left-3 top-2 text-sm text-[--color-faint] font-semibold">₹</span>
+                  <span className="absolute left-3 top-2 text-sm text-[var(--color-faint)] font-semibold">₹</span>
                   <input
                     value={amount}
                     onChange={(e) => {
@@ -264,13 +273,14 @@ function ExpenseForm({
                     placeholder="0.00"
                     inputMode="decimal"
                     required
-                    className="w-full pl-7 rounded-[--radius] border border-[--color-line] bg-[--color-canvas] px-3 py-2 text-sm tabular font-mono text-[--color-text] outline-none focus:border-[--color-brass]"
+                    data-testid="expense-amount"
+                    className="w-full pl-7 rounded-[var(--radius)] border border-[var(--color-line)] bg-[var(--color-canvas)] px-3 py-2 text-sm tabular font-mono text-[var(--color-text)] outline-none focus:border-[var(--color-brass)]"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-[--color-muted] mb-1">
+                <label className="block text-xs font-medium text-[var(--color-muted)] mb-1">
                   Date of Expense
                 </label>
                 <input
@@ -278,22 +288,88 @@ function ExpenseForm({
                   value={spentAt}
                   onChange={(e) => setSpentAt(e.target.value)}
                   required
-                  className="w-full rounded-[--radius] border border-[--color-line] bg-[--color-canvas] px-3 py-2 text-sm text-[--color-text] outline-none focus:border-[--color-brass]"
+                  data-testid="expense-date"
+                  className="w-full rounded-[var(--radius)] border border-[var(--color-line)] bg-[var(--color-canvas)] px-3 py-2 text-sm text-[var(--color-text)] outline-none focus:border-[var(--color-brass)]"
                 />
               </div>
             </div>
           </div>
 
+          {/* Transport add-on: Cab / Bike fare merges into the bill total */}
+          <div className="border border-[var(--color-line)] bg-[var(--color-surface-raised)] rounded-[var(--radius)] p-3 space-y-2">
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-xs font-medium text-[var(--color-text)]">Transport</span>
+              {transportMode !== "NONE" && fareAmount > 0 && (
+                <span
+                  className="text-[11px] text-[var(--color-brass)] font-mono"
+                  data-testid="transport-summary"
+                >
+                  Bill ₹{numAmount.toFixed(2)} + {transportMode === "CAB" ? "Cab" : "Bike"} ₹
+                  {fareAmount.toFixed(2)} = ₹{billTotal.toFixed(2)}
+                </span>
+              )}
+            </div>
+            <div className="flex flex-wrap items-center gap-2 text-xs" role="radiogroup" aria-label="Transport mode">
+              {(
+                [
+                  ["NONE", "No transport", "➖"],
+                  ["CAB", "Cab", "🚕"],
+                  ["BIKE", "Bike", "🏍️"],
+                ] as const
+              ).map(([mode, label, icon]) => (
+                <label
+                  key={mode}
+                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded border cursor-pointer transition-colors ${
+                    transportMode === mode
+                      ? "border-[var(--color-brass)] bg-[var(--color-brass-dim)]/40 text-[var(--color-text)] font-semibold"
+                      : "border-[var(--color-line)] text-[var(--color-muted)] hover:text-[var(--color-text)]"
+                  }`}
+                >
+                  <input
+                    type="radio"
+                    name="transport-mode"
+                    value={mode}
+                    checked={transportMode === mode}
+                    onChange={() => setTransportMode(mode)}
+                    data-testid={`transport-${mode.toLowerCase()}`}
+                    className="accent-[#e8b44a]"
+                  />
+                  <span aria-hidden="true">{icon}</span>
+                  <span>{label}</span>
+                </label>
+              ))}
+              {transportMode !== "NONE" && (
+                <div className="relative w-28">
+                  <span className="absolute left-2 top-1 text-[11px] text-[var(--color-faint)]">₹</span>
+                  <input
+                    value={transportFare}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      if (!val.startsWith("-")) {
+                        setTransportFare(val);
+                      }
+                    }}
+                    placeholder="Fare"
+                    inputMode="decimal"
+                    aria-label="Transport fare in rupees"
+                    data-testid="transport-fare"
+                    className="w-full pl-5 pr-1 py-1 rounded border border-[var(--color-line)] bg-[var(--color-canvas)] text-xs tabular font-mono text-[var(--color-text)] outline-none focus:border-[var(--color-brass)]"
+                  />
+                </div>
+              )}
+            </div>
+          </div>
+
           {/* Paid By: One or Many */}
-          <div className="border border-[--color-line] bg-[--color-surface-raised] rounded-[--radius] p-3 space-y-2.5">
+          <div className="border border-[var(--color-line)] bg-[var(--color-surface-raised)] rounded-[var(--radius)] p-3 space-y-2.5">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-medium text-[--color-text]">Paid By</span>
-              <div className="flex rounded border border-[--color-line] p-0.5 bg-[--color-canvas] text-[11px]">
+              <span className="text-xs font-medium text-[var(--color-text)]">Paid By</span>
+              <div className="flex rounded border border-[var(--color-line)] p-0.5 bg-[var(--color-canvas)] text-[11px]">
                 <button
                   type="button"
                   onClick={() => setIsMultiPayer(false)}
                   className={`px-2.5 py-0.5 rounded ${
-                    !isMultiPayer ? "bg-[--color-brass] text-[#0b0e0d] font-semibold" : "text-[--color-muted]"
+                    !isMultiPayer ? "bg-[var(--color-brass)] text-[#0b0e0d] font-semibold" : "text-[var(--color-muted)]"
                   }`}
                 >
                   Single Payer
@@ -302,7 +378,7 @@ function ExpenseForm({
                   type="button"
                   onClick={() => setIsMultiPayer(true)}
                   className={`px-2.5 py-0.5 rounded ${
-                    isMultiPayer ? "bg-[--color-brass] text-[#0b0e0d] font-semibold" : "text-[--color-muted]"
+                    isMultiPayer ? "bg-[var(--color-brass)] text-[#0b0e0d] font-semibold" : "text-[var(--color-muted)]"
                   }`}
                 >
                   Multiple Payers
@@ -314,7 +390,8 @@ function ExpenseForm({
               <select
                 value={singlePayerId}
                 onChange={(e) => setSinglePayerId(e.target.value)}
-                className="w-full rounded-[--radius] border border-[--color-line] bg-[--color-canvas] px-3 py-2 text-sm text-[--color-text] outline-none focus:border-[--color-brass]"
+                data-testid="expense-payer"
+                className="w-full rounded-[var(--radius)] border border-[var(--color-line)] bg-[var(--color-canvas)] px-3 py-2 text-sm text-[var(--color-text)] outline-none focus:border-[var(--color-brass)]"
               >
                 {members.map((m) => (
                   <option key={m.id} value={m.id}>
@@ -324,15 +401,15 @@ function ExpenseForm({
               </select>
             ) : (
               <div className="space-y-2 pt-1">
-                <p className="text-[11px] text-[--color-muted]">
-                  Enter the specific ₹ amount paid by each person. Must total exactly ₹{numAmount.toFixed(2)}.
+                <p className="text-[11px] text-[var(--color-muted)]">
+                   Enter the specific ₹ amount paid by each person. Must total exactly ₹{billTotal.toFixed(2)}.
                 </p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-36 overflow-y-auto pr-1">
                   {members.map((m) => (
                     <div key={m.id} className="flex items-center gap-2 text-xs">
-                      <span className="truncate flex-1 text-[--color-text]">{m.displayName}</span>
+                      <span className="truncate flex-1 text-[var(--color-text)]">{m.displayName}</span>
                       <div className="relative w-24">
-                        <span className="absolute left-2 top-1 text-[11px] text-[--color-faint]">₹</span>
+                        <span className="absolute left-2 top-1 text-[11px] text-[var(--color-faint)]">₹</span>
                         <input
                           value={multiPayerAmounts[m.id] || ""}
                           onChange={(e) => {
@@ -343,7 +420,7 @@ function ExpenseForm({
                           }}
                           placeholder="0.00"
                           inputMode="decimal"
-                          className="w-full pl-5 pr-1 py-1 rounded border border-[--color-line] bg-[--color-canvas] text-xs tabular font-mono text-[--color-text] outline-none"
+                          className="w-full pl-5 pr-1 py-1 rounded border border-[var(--color-line)] bg-[var(--color-canvas)] text-xs tabular font-mono text-[var(--color-text)] outline-none"
                         />
                       </div>
                     </div>
@@ -351,14 +428,14 @@ function ExpenseForm({
                 </div>
 
                 {/* Multi-Payer Validation Alert */}
-                <div className="flex items-center justify-between text-xs pt-1 border-t border-[--color-line]">
-                  <span className="text-[--color-faint]">
-                    Payers sum: <strong className="text-[--color-text]">₹{payerValidation.sum.toFixed(2)}</strong>
+                <div className="flex items-center justify-between text-xs pt-1 border-t border-[var(--color-line)]">
+                  <span className="text-[var(--color-faint)]">
+                    Payers sum: <strong className="text-[var(--color-text)]">₹{payerValidation.sum.toFixed(2)}</strong>
                   </span>
                   {payerValidation.valid ? (
-                    <span className="text-[--color-credit] font-medium">✓ Payers match exactly</span>
+                    <span className="text-[var(--color-credit)] font-medium">✓ Payers match exactly</span>
                   ) : (
-                    <span className="text-[--color-debit] font-medium">
+                    <span className="text-[var(--color-debit)] font-medium">
                       Remaining: ₹{payerValidation.diff.toFixed(2)}
                     </span>
                   )}
@@ -370,11 +447,11 @@ function ExpenseForm({
           {/* Split Type Tabs */}
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <label className="text-xs font-medium text-[--color-muted]">Split Method</label>
-              <span className="text-[11px] text-[--color-faint]">Exact to 2 decimals</span>
+              <label className="text-xs font-medium text-[var(--color-muted)]">Split Method</label>
+              <span className="text-[11px] text-[var(--color-faint)]">Exact to 2 decimals</span>
             </div>
 
-            <div className="grid grid-cols-4 gap-1 rounded-[--radius] border border-[--color-line] p-1 bg-[--color-canvas] text-xs">
+            <div className="grid grid-cols-4 gap-1 rounded-[var(--radius)] border border-[var(--color-line)] p-1 bg-[var(--color-canvas)] text-xs">
               {(
                 [
                   ["EQUAL", "Equal"],
@@ -387,10 +464,11 @@ function ExpenseForm({
                   key={method}
                   type="button"
                   onClick={() => setSplitMethod(method)}
+                  data-testid={`split-${method.toLowerCase()}`}
                   className={`py-1.5 rounded font-medium transition-colors ${
                     splitMethod === method
-                      ? "bg-[--color-brass] text-[#0b0e0d]"
-                      : "text-[--color-muted] hover:text-[--color-text]"
+                      ? "bg-[var(--color-brass)] text-[#0b0e0d]"
+                      : "text-[var(--color-muted)] hover:text-[var(--color-text)]"
                   }`}
                 >
                   {label}
@@ -400,17 +478,17 @@ function ExpenseForm({
           </div>
 
           {/* Participants & Inputs Checklist */}
-          <div className="border border-[--color-line] bg-[--color-surface-raised] rounded-[--radius] p-3 space-y-3">
+          <div className="border border-[var(--color-line)] bg-[var(--color-surface-raised)] rounded-[var(--radius)] p-3 space-y-3">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-medium text-[--color-text]">
+              <span className="text-xs font-medium text-[var(--color-text)]">
                 Participants ({selectedParticipants.size} of {members.length})
               </span>
               <div className="flex items-center gap-2 text-xs">
-                <button type="button" onClick={selectAll} className="text-[--color-brass] hover:underline">
+                <button type="button" onClick={selectAll} className="text-[var(--color-brass)] hover:underline">
                   Select All
                 </button>
-                <span className="text-[--color-line-bright]">|</span>
-                <button type="button" onClick={clearAll} className="text-[--color-muted] hover:text-[--color-text]">
+                <span className="text-[var(--color-line-bright)]">|</span>
+                <button type="button" onClick={clearAll} className="text-[var(--color-muted)] hover:text-[var(--color-text)]">
                   Clear
                 </button>
               </div>
@@ -427,8 +505,8 @@ function ExpenseForm({
                     key={m.id}
                     className={`flex items-center justify-between gap-2 p-2 rounded border text-xs transition-colors ${
                       isSelected
-                        ? "border-[--color-brass]/50 bg-[--color-canvas]"
-                        : "border-[--color-line] bg-transparent opacity-50"
+                        ? "border-[var(--color-brass)]/50 bg-[var(--color-canvas)]"
+                        : "border-[var(--color-line)] bg-transparent opacity-50"
                     }`}
                   >
                     <label
@@ -441,7 +519,7 @@ function ExpenseForm({
                         onChange={() => {}}
                         className="accent-[#e8b44a] rounded"
                       />
-                      <span className="truncate font-medium text-[--color-text]">{m.displayName}</span>
+                      <span className="truncate font-medium text-[var(--color-text)]">{m.displayName}</span>
                     </label>
 
                     {/* Dynamic input depending on split type */}
@@ -449,7 +527,7 @@ function ExpenseForm({
                       <div className="flex items-center gap-2 shrink-0">
                         {splitMethod === "EXACT" && (
                           <div className="relative w-24">
-                            <span className="absolute left-2 top-1 text-[11px] text-[--color-faint]">₹</span>
+                            <span className="absolute left-2 top-1 text-[11px] text-[var(--color-faint)]">₹</span>
                             <input
                               value={splitInputs[m.id] || ""}
                               onChange={(e) => {
@@ -460,7 +538,7 @@ function ExpenseForm({
                               }}
                               placeholder="0.00"
                               inputMode="decimal"
-                              className="w-full pl-5 pr-1 py-1 rounded border border-[--color-line] bg-[--color-surface] text-xs tabular font-mono text-[--color-text] outline-none"
+                              className="w-full pl-5 pr-1 py-1 rounded border border-[var(--color-line)] bg-[var(--color-surface)] text-xs tabular font-mono text-[var(--color-text)] outline-none"
                             />
                           </div>
                         )}
@@ -477,9 +555,9 @@ function ExpenseForm({
                               }}
                               placeholder="0"
                               inputMode="decimal"
-                              className="w-full pl-2 pr-5 py-1 rounded border border-[--color-line] bg-[--color-surface] text-xs tabular font-mono text-[--color-text] outline-none"
+                              className="w-full pl-2 pr-5 py-1 rounded border border-[var(--color-line)] bg-[var(--color-surface)] text-xs tabular font-mono text-[var(--color-text)] outline-none"
                             />
-                            <span className="absolute right-2 top-1 text-[11px] text-[--color-faint]">%</span>
+                            <span className="absolute right-2 top-1 text-[11px] text-[var(--color-faint)]">%</span>
                           </div>
                         )}
 
@@ -495,15 +573,15 @@ function ExpenseForm({
                               }}
                               placeholder="1"
                               inputMode="numeric"
-                              className="w-14 px-2 py-1 rounded border border-[--color-line] bg-[--color-surface] text-xs tabular font-mono text-center text-[--color-text] outline-none"
+                              className="w-14 px-2 py-1 rounded border border-[var(--color-line)] bg-[var(--color-surface)] text-xs tabular font-mono text-center text-[var(--color-text)] outline-none"
                             />
-                            <span className="text-[10px] text-[--color-faint]">sh</span>
+                            <span className="text-[10px] text-[var(--color-faint)]">sh</span>
                           </div>
                         )}
 
                         {/* Computed ₹ share preview */}
                         {calculatedShare && (
-                          <span className="tabular font-mono font-medium text-[--color-credit] min-w-[70px] text-right">
+                          <span className="tabular font-mono font-medium text-[var(--color-credit)] min-w-[70px] text-right">
                             ₹ {calculatedShare.amount.toFixed(2)}
                           </span>
                         )}
@@ -515,36 +593,36 @@ function ExpenseForm({
             </div>
 
             {/* Split Validation Alert */}
-            <div className="pt-2 border-t border-[--color-line] flex flex-col sm:flex-row sm:items-center justify-between text-xs gap-1">
+            <div className="pt-2 border-t border-[var(--color-line)] flex flex-col sm:flex-row sm:items-center justify-between text-xs gap-1">
               <div>
                 {splitMethod === "EQUAL" && (
-                  <span className="text-[--color-faint]">
+                  <span className="text-[var(--color-faint)]">
                     Equal split: 1/{selectedParticipants.size} each (₹
-                    {selectedParticipants.size > 0 ? (numAmount / selectedParticipants.size).toFixed(2) : "0.00"}
+                    {selectedParticipants.size > 0 ? (billTotal / selectedParticipants.size).toFixed(2) : "0.00"}
                     /person)
                   </span>
                 )}
                 {splitMethod === "PERCENTAGE" && (
-                  <span className="text-[--color-faint]">
-                    Total Percentage: <strong className="text-[--color-text]">{splitValidation.sum.toFixed(1)}%</strong>
+                  <span className="text-[var(--color-faint)]">
+                    Total Percentage: <strong className="text-[var(--color-text)]">{splitValidation.sum.toFixed(1)}%</strong>
                   </span>
                 )}
                 {splitMethod === "EXACT" && (
-                  <span className="text-[--color-faint]">
+                  <span className="text-[var(--color-faint)]">
                     Sum of exact shares:{" "}
-                    <strong className="text-[--color-text]">₹{splitValidation.sum.toFixed(2)}</strong>
+                    <strong className="text-[var(--color-text)]">₹{splitValidation.sum.toFixed(2)}</strong>
                   </span>
                 )}
                 {splitMethod === "SHARES" && (
-                  <span className="text-[--color-faint]">Weighted proportional distribution</span>
+                  <span className="text-[var(--color-faint)]">Weighted proportional distribution</span>
                 )}
               </div>
 
               <div>
                 {splitValidation.valid ? (
-                  <span className="text-[--color-credit] font-medium">✓ Splits balance exactly</span>
+                  <span className="text-[var(--color-credit)] font-medium">✓ Splits balance exactly</span>
                 ) : (
-                  <span className="text-[--color-debit] font-medium">
+                  <span className="text-[var(--color-debit)] font-medium">
                     {splitValidation.error || "Split values must balance"}
                   </span>
                 )}
@@ -553,11 +631,11 @@ function ExpenseForm({
           </div>
 
           {/* Footer Actions */}
-          <div className="pt-2 border-t border-[--color-line] flex items-center justify-end gap-2">
+          <div className="pt-2 border-t border-[var(--color-line)] flex items-center justify-end gap-2">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-xs text-[--color-muted] hover:text-[--color-text]"
+              className="px-4 py-2 text-xs text-[var(--color-muted)] hover:text-[var(--color-text)]"
             >
               Cancel
             </button>
@@ -565,13 +643,14 @@ function ExpenseForm({
               type="submit"
               disabled={
                 !description.trim() ||
-                numAmount <= 0 ||
+                billTotal <= 0 ||
                 !payerValidation.valid ||
                 !splitValidation.valid
               }
-              className="bg-[--color-brass] px-6 py-2.5 rounded-[--radius] text-xs font-semibold text-[#0b0e0d] transition-opacity hover:opacity-90 disabled:opacity-40"
+              data-testid="expense-save"
+              className="bg-[var(--color-brass)] px-6 py-2.5 rounded-[var(--radius)] text-xs font-semibold text-[#0b0e0d] transition-opacity hover:opacity-90 disabled:opacity-40"
             >
-              {isEditMode ? "Save Changes" : `Add Expense (₹${numAmount.toFixed(2)})`}
+              {isEditMode ? "Save Changes" : `Add Expense (₹${billTotal.toFixed(2)})`}
             </button>
           </div>
         </form>

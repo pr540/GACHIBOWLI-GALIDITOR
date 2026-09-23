@@ -31,7 +31,7 @@ export function ThemeToggle() {
       type="button"
       title={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
       aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
-      className="inline-flex items-center justify-center p-2 rounded-[--radius] border border-[--color-line] bg-[--color-surface] hover:border-[--color-brass] text-[--color-muted] hover:text-[--color-brass] transition-colors min-h-[38px] min-w-[38px]"
+      className="inline-flex items-center justify-center p-2 rounded-[var(--radius)] border border-[var(--color-line)] bg-[var(--color-surface)] hover:border-[var(--color-brass)] text-[var(--color-muted)] hover:text-[var(--color-brass)] transition-colors min-h-[38px] min-w-[38px]"
     >
       {theme === "dark" ? (
         // Sun icon for dark mode (click to make light)

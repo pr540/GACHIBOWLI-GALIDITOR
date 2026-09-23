@@ -184,27 +184,27 @@ export function MonthDashboard({
   }, [selectedYear, selectedMonth, rawMonthExpenses]);
 
   return (
-    <section className="rounded-[--radius-lg] border border-[--color-line-bright] bg-[--color-surface] overflow-hidden shadow-sm">
+    <section className="rounded-[var(--radius-lg)] border border-[var(--color-line-bright)] bg-[var(--color-surface)] overflow-hidden shadow-sm">
       {/* Optional Rich Dashboard Visual Banner */}
       {showBanner && (
-        <div className="relative h-28 sm:h-36 w-full overflow-hidden bg-[#0a0f0d] border-b border-[--color-line]">
+        <div className="relative h-28 sm:h-36 w-full overflow-hidden bg-[#0a0f0d] border-b border-[var(--color-line)]">
           <img
             src="/dashboard_banner.jpg"
             alt="Financial Dashboard"
             className="w-full h-full object-cover opacity-60 mix-blend-luminosity hover:opacity-80 transition-opacity"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[--color-surface] via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-surface)] via-transparent to-transparent" />
           <div className="absolute bottom-3 left-4 right-4 flex items-end justify-between">
             <div>
               <div className="flex items-center gap-1.5">
-                <span className="text-[10px] font-mono uppercase tracking-wider px-1.5 py-0.5 rounded bg-[--color-brass]/20 text-[--color-brass] border border-[--color-brass]/30">
+                <span className="text-[10px] font-mono uppercase tracking-wider px-1.5 py-0.5 rounded bg-[var(--color-brass)]/20 text-[var(--color-brass)] border border-[var(--color-brass)]/30">
                   {personalOnly ? `${currentUser?.name}'s Personal View` : "Group Overview"}
                 </span>
-                <span className="text-[10px] text-[--color-muted]">
+                <span className="text-[10px] text-[var(--color-muted)]">
                   {monthNames[selectedMonth]} {selectedYear}
                 </span>
               </div>
-              <h3 className="text-base sm:text-lg font-semibold text-[--color-text] tracking-tight mt-0.5">
+              <h3 className="text-base sm:text-lg font-semibold text-[var(--color-text)] tracking-tight mt-0.5">
                 {personalOnly
                   ? `${currentUser?.name} · Active Ledger`
                   : "Shared Expenses Dashboard"}
@@ -214,7 +214,7 @@ export function MonthDashboard({
             <button
               onClick={() => setShowBanner(false)}
               title="Collapse banner"
-              className="text-xs text-[--color-muted] hover:text-[--color-text] px-1.5 py-0.5 rounded bg-black/40 backdrop-blur-sm"
+              className="text-xs text-[var(--color-muted)] hover:text-[var(--color-text)] px-1.5 py-0.5 rounded bg-black/40 backdrop-blur-sm"
             >
               ✕
             </button>
@@ -224,25 +224,25 @@ export function MonthDashboard({
 
       <div className="p-4 sm:p-5">
         {/* Month Navigator Header & View Toggles */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[--color-line]">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[var(--color-line)]">
           <div className="flex items-center gap-2">
-            <div className="flex items-center bg-[--color-surface-raised] rounded-[--radius] border border-[--color-line] p-0.5">
+            <div className="flex items-center bg-[var(--color-surface-raised)] rounded-[var(--radius)] border border-[var(--color-line)] p-0.5">
               <button
                 onClick={handlePrevMonth}
                 type="button"
                 title="Previous month"
-                className="px-2 py-1 text-xs text-[--color-muted] hover:text-[--color-text] transition-colors rounded"
+                className="px-2 py-1 text-xs text-[var(--color-muted)] hover:text-[var(--color-text)] transition-colors rounded"
               >
                 ←
               </button>
-              <span className="px-3 py-1 text-xs font-semibold text-[--color-text] tracking-wide">
+              <span className="px-3 py-1 text-xs font-semibold text-[var(--color-text)] tracking-wide">
                 {monthNames[selectedMonth]} {selectedYear}
               </span>
               <button
                 onClick={handleNextMonth}
                 type="button"
                 title="Next month"
-                className="px-2 py-1 text-xs text-[--color-muted] hover:text-[--color-text] transition-colors rounded"
+                className="px-2 py-1 text-xs text-[var(--color-muted)] hover:text-[var(--color-text)] transition-colors rounded"
               >
                 →
               </button>
@@ -252,7 +252,7 @@ export function MonthDashboard({
               <button
                 onClick={handleResetToCurrent}
                 type="button"
-                className="text-[11px] px-2 py-1 rounded bg-[--color-brass-dim]/40 text-[--color-brass] hover:bg-[--color-brass-dim] transition-colors"
+                className="text-[11px] px-2 py-1 rounded bg-[var(--color-brass-dim)]/40 text-[var(--color-brass)] hover:bg-[var(--color-brass-dim)] transition-colors"
               >
                 Today
               </button>
@@ -261,7 +261,7 @@ export function MonthDashboard({
             {!showBanner && (
               <button
                 onClick={() => setShowBanner(true)}
-                className="text-[11px] text-[--color-faint] hover:text-[--color-muted]"
+                className="text-[11px] text-[var(--color-faint)] hover:text-[var(--color-muted)]"
               >
                 🖼 Show Banner
               </button>
@@ -275,24 +275,24 @@ export function MonthDashboard({
                 onClick={() => onTogglePersonalOnly(!personalOnly)}
                 type="button"
                 title="Filter website to show only your personal activity when switching account"
-                className={`text-xs px-2.5 py-1 rounded-[--radius] border transition-colors ${
+                className={`text-xs px-2.5 py-1 rounded-[var(--radius)] border transition-colors ${
                   personalOnly
-                    ? "border-[--color-brass] bg-[--color-brass] text-[#0b0e0d] font-semibold"
-                    : "border-[--color-line] bg-[--color-surface-raised] text-[--color-muted] hover:text-[--color-text]"
+                    ? "border-[var(--color-brass)] bg-[var(--color-brass)] text-[#0b0e0d] font-semibold"
+                    : "border-[var(--color-line)] bg-[var(--color-surface-raised)] text-[var(--color-muted)] hover:text-[var(--color-text)]"
                 }`}
               >
                 👤 {personalOnly ? "My View" : "All Members"}
               </button>
             )}
 
-            <div className="flex items-center rounded-[--radius] border border-[--color-line] bg-[--color-surface-raised] p-0.5 text-xs">
+            <div className="flex items-center rounded-[var(--radius)] border border-[var(--color-line)] bg-[var(--color-surface-raised)] p-0.5 text-xs">
               <button
                 onClick={() => setViewMode("cards")}
                 type="button"
                 className={`px-2 py-1 rounded transition-colors ${
                   viewMode === "cards"
-                    ? "bg-[--color-surface] text-[--color-brass] font-medium shadow-sm"
-                    : "text-[--color-muted] hover:text-[--color-text]"
+                    ? "bg-[var(--color-surface)] text-[var(--color-brass)] font-medium shadow-sm"
+                    : "text-[var(--color-muted)] hover:text-[var(--color-text)]"
                 }`}
               >
                 Cards
@@ -302,8 +302,8 @@ export function MonthDashboard({
                 type="button"
                 className={`px-2 py-1 rounded transition-colors ${
                   viewMode === "calendar"
-                    ? "bg-[--color-surface] text-[--color-brass] font-medium shadow-sm"
-                    : "text-[--color-muted] hover:text-[--color-text]"
+                    ? "bg-[var(--color-surface)] text-[var(--color-brass)] font-medium shadow-sm"
+                    : "text-[var(--color-muted)] hover:text-[var(--color-text)]"
                 }`}
               >
                 📅 Calendar
@@ -317,52 +317,52 @@ export function MonthDashboard({
           <>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3 mt-4">
               {/* Card 1: Total Spent */}
-              <div className="rounded-[--radius] bg-[--color-surface-raised] border border-[--color-line] p-3">
-                <p className="eyebrow text-[10px] text-[--color-muted]">Total Spent</p>
-                <p className="text-base sm:text-lg font-semibold text-[--color-text] mt-1 tabular">
+              <div className="rounded-[var(--radius)] bg-[var(--color-surface-raised)] border border-[var(--color-line)] p-3">
+                <p className="eyebrow text-[10px] text-[var(--color-muted)]">Total Spent</p>
+                <p className="text-base sm:text-lg font-semibold text-[var(--color-text)] mt-1 tabular">
                   ₹{stats.totalGroupSpent.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </p>
-                <p className="text-[11px] text-[--color-faint] mt-0.5">{stats.rawCount} bills total</p>
+                <p className="text-[11px] text-[var(--color-faint)] mt-0.5">{stats.rawCount} bills total</p>
               </div>
 
               {/* Card 2: Your Share */}
-              <div className="rounded-[--radius] bg-[--color-surface-raised] border border-[--color-line] p-3">
-                <p className="eyebrow text-[10px] text-[--color-muted]">
+              <div className="rounded-[var(--radius)] bg-[var(--color-surface-raised)] border border-[var(--color-line)] p-3">
+                <p className="eyebrow text-[10px] text-[var(--color-muted)]">
                   {currentUser?.name || "Your"} Share
                 </p>
-                <p className="text-base sm:text-lg font-semibold text-[--color-text] mt-1 tabular">
+                <p className="text-base sm:text-lg font-semibold text-[var(--color-text)] mt-1 tabular">
                   ₹{stats.userShare.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </p>
-                <p className="text-[11px] text-[--color-faint] mt-0.5">Consumed</p>
+                <p className="text-[11px] text-[var(--color-faint)] mt-0.5">Consumed</p>
               </div>
 
               {/* Card 3: You Paid */}
-              <div className="rounded-[--radius] bg-[--color-surface-raised] border border-[--color-line] p-3">
-                <p className="eyebrow text-[10px] text-[--color-muted]">
+              <div className="rounded-[var(--radius)] bg-[var(--color-surface-raised)] border border-[var(--color-line)] p-3">
+                <p className="eyebrow text-[10px] text-[var(--color-muted)]">
                   {currentUser?.name || "You"} Paid
                 </p>
-                <p className="text-base sm:text-lg font-semibold text-[--color-text] mt-1 tabular">
+                <p className="text-base sm:text-lg font-semibold text-[var(--color-text)] mt-1 tabular">
                   ₹{stats.userPaid.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </p>
-                <p className="text-[11px] text-[--color-faint] mt-0.5">Paid upfront</p>
+                <p className="text-[11px] text-[var(--color-faint)] mt-0.5">Paid upfront</p>
               </div>
 
               {/* Card 4: Net Position */}
-              <div className="rounded-[--radius] bg-[--color-surface-raised] border border-[--color-line] p-3">
-                <p className="eyebrow text-[10px] text-[--color-muted]">Month Balance</p>
+              <div className="rounded-[var(--radius)] bg-[var(--color-surface-raised)] border border-[var(--color-line)] p-3">
+                <p className="eyebrow text-[10px] text-[var(--color-muted)]">Month Balance</p>
                 <p
                   className={`text-base sm:text-lg font-semibold mt-1 tabular ${
                     stats.userNet > 0.005
-                      ? "text-[--color-credit]"
+                      ? "text-[var(--color-credit)]"
                       : stats.userNet < -0.005
-                      ? "text-[--color-debit]"
-                      : "text-[--color-muted]"
+                      ? "text-[var(--color-debit)]"
+                      : "text-[var(--color-muted)]"
                   }`}
                 >
                   {stats.userNet > 0.005 ? "+" : ""}
                   ₹{stats.userNet.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </p>
-                <p className="text-[11px] text-[--color-faint] mt-0.5">
+                <p className="text-[11px] text-[var(--color-faint)] mt-0.5">
                   {stats.userNet > 0.005
                     ? "You get back"
                     : stats.userNet < -0.005
@@ -374,26 +374,26 @@ export function MonthDashboard({
 
             {/* Highlights: Top Spender & Distribution Bar */}
             {stats.totalGroupSpent > 0 && (
-              <div className="mt-4 pt-3 border-t border-[--color-line] space-y-2">
+              <div className="mt-4 pt-3 border-t border-[var(--color-line)] space-y-2">
                 <div className="flex items-center justify-between text-xs">
-                  <span className="text-[--color-muted]">
-                    Top Spender: <strong className="text-[--color-text] font-medium">{stats.topSpender.name}</strong> (₹{stats.topSpender.amount.toFixed(2)})
+                  <span className="text-[var(--color-muted)]">
+                    Top Spender: <strong className="text-[var(--color-text)] font-medium">{stats.topSpender.name}</strong> (₹{stats.topSpender.amount.toFixed(2)})
                   </span>
                   {onSelectMonthFilter && (
                     <button
                       onClick={onSelectMonthFilter}
                       type="button"
-                      className="text-xs font-medium text-[--color-brass] hover:underline"
+                      className="text-xs font-medium text-[var(--color-brass)] hover:underline"
                     >
                       Filter History ↓
                     </button>
                   )}
                 </div>
 
-                <div className="w-full h-2 rounded-full bg-[--color-line] overflow-hidden flex">
+                <div className="w-full h-2 rounded-full bg-[var(--color-line)] overflow-hidden flex">
                   {stats.contributions.map((c, i) => {
                     const colors = [
-                      "bg-[--color-brass]",
+                      "bg-[var(--color-brass)]",
                       "bg-[#4ade80]",
                       "bg-[#60a5fa]",
                       "bg-[#f472b6]",
@@ -416,7 +416,7 @@ export function MonthDashboard({
         ) : (
           /* View Mode 2: Interactive Month Calendar View */
           <div className="mt-4">
-            <div className="grid grid-cols-7 gap-1 text-center text-[10px] font-mono text-[--color-muted] pb-1 border-b border-[--color-line]">
+            <div className="grid grid-cols-7 gap-1 text-center text-[10px] font-mono text-[var(--color-muted)] pb-1 border-b border-[var(--color-line)]">
               <span>Sun</span>
               <span>Mon</span>
               <span>Tue</span>
@@ -429,7 +429,7 @@ export function MonthDashboard({
             <div className="grid grid-cols-7 gap-1 mt-1">
               {calendarDays.map((slot, idx) => {
                 if (slot.day === null) {
-                  return <div key={`empty-${idx}`} className="h-14 rounded bg-[--color-canvas]/40" />;
+                  return <div key={`empty-${idx}`} className="h-14 rounded bg-[var(--color-canvas)]/40" />;
                 }
 
                 const isToday =
@@ -449,22 +449,22 @@ export function MonthDashboard({
                     disabled={!hasExpense}
                     className={`h-14 rounded p-1 text-left flex flex-col justify-between border transition-all ${
                       isToday
-                        ? "border-[--color-brass] bg-[--color-brass-dim]/20 font-bold"
+                        ? "border-[var(--color-brass)] bg-[var(--color-brass-dim)]/20 font-bold"
                         : hasExpense
-                        ? "border-[--color-line-bright] bg-[--color-surface-raised] hover:border-[--color-brass] cursor-pointer"
-                        : "border-[--color-line]/40 bg-[--color-canvas]/60 opacity-60 cursor-default"
+                        ? "border-[var(--color-line-bright)] bg-[var(--color-surface-raised)] hover:border-[var(--color-brass)] cursor-pointer"
+                        : "border-[var(--color-line)]/40 bg-[var(--color-canvas)]/60 opacity-60 cursor-default"
                     }`}
                   >
-                    <span className={`text-[10px] ${isToday ? "text-[--color-brass]" : "text-[--color-text]"}`}>
+                    <span className={`text-[10px] ${isToday ? "text-[var(--color-brass)]" : "text-[var(--color-text)]"}`}>
                       {slot.day}
                     </span>
 
                     {hasExpense && (
                       <div className="text-[9px] font-mono leading-tight">
-                        <span className="block text-[--color-credit] font-semibold truncate">
+                        <span className="block text-[var(--color-credit)] font-semibold truncate">
                           ₹{slot.total.toFixed(0)}
                         </span>
-                        <span className="text-[8px] text-[--color-muted]">
+                        <span className="text-[8px] text-[var(--color-muted)]">
                           {slot.count} bill{slot.count > 1 ? "s" : ""}
                         </span>
                       </div>
@@ -473,7 +473,7 @@ export function MonthDashboard({
                 );
               })}
             </div>
-            <p className="text-[10px] text-[--color-faint] text-center mt-2">
+            <p className="text-[10px] text-[var(--color-faint)] text-center mt-2">
               💡 Click on any day with expenses to filter the expense history.
             </p>
           </div>

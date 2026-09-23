@@ -22,10 +22,10 @@ export function Amount({
 
   const color =
     resolved === "credit"
-      ? "text-[--color-credit]"
+      ? "text-[var(--color-credit)]"
       : resolved === "debit"
-        ? "text-[--color-debit]"
-        : "text-[--color-text]";
+        ? "text-[var(--color-debit)]"
+        : "text-[var(--color-text)]";
 
   // The sign is carried by colour and by the words around it, so the minus
   // glyph would be redundant noise in a balance column.
@@ -35,7 +35,7 @@ export function Amount({
 
   return (
     <span className={`tabular ${color} ${className}`}>
-      <span className="text-[--color-faint] mr-1 text-[0.9em] font-medium">{symbol}</span>
+      <span className="text-[var(--color-faint)] mr-1 text-[0.9em] font-medium">{symbol}</span>
       {display}
     </span>
   );

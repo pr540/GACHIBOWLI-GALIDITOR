@@ -48,7 +48,7 @@
   --color-brass-dim: #fef3c7;
 }
 
-@theme {
+@theme inline {
   --color-canvas: var(--color-canvas);
   --color-surface: var(--color-surface);
   --color-surface-raised: var(--color-surface-raised);

@@ -185,3 +185,12 @@ push into main
 **Actions Taken:**
 - Staged and committed all work as `9f02f6a` ("feat(web): eslint flat config, offline-first groups, cab/bike transport, Tosca testids, security headers", 31 files).
 - Push initially failed with `Permission denied (publickey)`; diagnosed the machine's ed25519 key was not registered on GitHub, gave the user the exact public key to add, and pushed successfully (`e60c74c..9f02f6a main -> main`) once the key was added.
+
+---
+
+## APK Release (verified, installable)
+- **File:** `ggsplitops-v1.1.0.apk` (repo root; identical copy at `ggsplitops/ggsplitops.apk`, MD5 `ef049cd592d8006e1daf393b2e90e62f`)
+- **App name:** ggsplitops · **Package:** `com.splitops.ggsplitops`
+- **Version:** 1.1.0 (versionCode 2) · **Requires:** Android 7.0+ (minSdk 24), targets Android 14 (targetSdk 34)
+- **Signature:** valid, debug cert (`apksigner verify` clean) · **Permissions:** INTERNET + ACCESS_NETWORK_STATE only · **Size:** 30 KB
+- **Status:** installs successfully (targetSdk fix resolved the earlier install failure). Debug-signed offline build — data stays on-device.

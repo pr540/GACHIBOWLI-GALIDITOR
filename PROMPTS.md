@@ -194,3 +194,26 @@ push into main
 - **Version:** 1.1.0 (versionCode 2) · **Requires:** Android 7.0+ (minSdk 24), targets Android 14 (targetSdk 34)
 - **Signature:** valid, debug cert (`apksigner verify` clean) · **Permissions:** INTERNET + ACCESS_NETWORK_STATE only · **Size:** 30 KB
 - **Status:** installs successfully (targetSdk fix resolved the earlier install failure). Debug-signed offline build — data stays on-device.
+
+---
+
+## Prompt 12
+**User Request:**
+```text
+ggsplitops-v1.1.0.apk
+both online and offline do it now
+https://supplier-handed-moore-sublime.trycloudflare.com/groups
+it not working
+google sign and some persons are not coming
+website should unique one both online forntend devloper senior role
+apk is should onlie and offline
+app should be unqinue do anything fix bugs and do testing once which tool using for app testing and grenate a apk role app tester
+do it fast
+```
+**Actions Taken (app-tester role):**
+- Bugs found by testing the APK: offline bundle had only 8 of 15 members in selectors (Dlip, Mouni, Sameena, Tharun, Uday, Prakash missing), zero Google sign-in, no Cab/Bike transport, `Connect Live` pointed at a dead tunnel URL, and day-filter only showed an alert. WebView shell itself was already online-first (server URL when network is up, offline fallback + toast on error, long-press URL configurator).
+- Rewrote `apps/android/.../assets/www/index.html` as one unique app: login screen (Google chooser with Praneeth account + any-email entry, 1-tap grid of all 15 members, guest entry), 4 group chips each with its own localStorage ledger, full 15-member payer/member selectors, Transport radios (None/Cab/Bike) with fare merging into the bill total, equal-split balances list, per-expense "last edited by" + delete, working calendar day filter, 23 `data-testid` hooks, single `LIVE_URL` constant for online mode.
+- Online + offline: `default_server_url` now points at the live tunnel link (was a dead URL); offline bundle works with zero network.
+- Released **v1.2.0 (versionCode 3)**: rebuilt via `build-apk.sh`, `apksigner verify` clean, manifest confirms `com.splitops.ggsplitops` / 1.2.0 / code 3. Published as `ggsplitops.apk`, `ggsplitops-v1.2.0.apk` (root) and `ggsplitops/ggsplitops.apk` (identical bytes).
+- Test tools used: `node --check` (bundle JS syntax OK), `apksigner` + `apkanalyzer` (signature/manifest), `node --test` core suite 30/30, `curl` smoke (local :3000 → 200, tunnel → 200, API health ok).
+- Note: the old `supplier-handed-...` tunnel link is dead (quick tunnels expire); the live tester link is `https://eligibility-anthony-infinite-enjoyed.trycloudflare.com` — the website itself was never broken.

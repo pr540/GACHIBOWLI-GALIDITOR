@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>ggsplitops — Android Tester App</title>
+  <title>ggsplitops — SplitOps Tester App</title>
   <style>
     :root {
       --canvas: #0b0e0d;
@@ -21,31 +21,28 @@
     }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
     body { background: var(--canvas); color: var(--text); padding-bottom: 80px; -webkit-tap-highlight-color: transparent; }
-    
-    /* Top Header */
-    .header { background: #070b09; border-bottom: 1px solid var(--line); padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 40; backdrop-filter: blur(10px); }
+
+    .header { background: #070b09; border-bottom: 1px solid var(--line); padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 40; }
     .brand { display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 18px; color: #fff; }
     .pulse-dot { width: 10px; height: 10px; background: var(--brass); border-radius: 50%; box-shadow: 0 0 8px rgba(232,180,74,0.8); }
     .badge-inr { font-size: 10px; background: rgba(255,255,255,0.1); color: var(--brass); padding: 2px 8px; border-radius: 20px; border: 1px solid rgba(232,180,74,0.3); font-family: monospace; }
-    
-    /* Server connection alert */
+
     .server-bar { background: var(--surface-raised); border-bottom: 1px solid var(--line); padding: 8px 16px; display: flex; align-items: center; justify-content: space-between; font-size: 11px; }
     .server-status { display: flex; align-items: center; gap: 6px; color: var(--muted); }
     .btn-connect { background: var(--brass); color: #000; border: none; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer; }
 
-    /* Content Container */
     .container { padding: 16px; max-width: 600px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; }
-
-    /* Cards */
     .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px; }
-    
-    /* Member selector */
-    .member-bar { display: flex; align-items: center; justify-content: space-between; }
-    .member-info { display: flex; align-items: center; gap: 10px; }
-    .avatar { width: 36px; height: 36px; border-radius: 10px; background: var(--brass-dim); border: 1px solid var(--brass); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; color: var(--brass); }
-    .member-select { background: var(--surface-raised); border: 1px solid var(--line-bright); color: var(--text); padding: 6px 10px; border-radius: 8px; font-size: 12px; outline: none; }
 
-    /* KPI Grid */
+    .member-bar { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .member-info { display: flex; align-items: center; gap: 10px; min-width: 0; }
+    .avatar { width: 36px; height: 36px; border-radius: 10px; background: var(--brass-dim); border: 1px solid var(--brass); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; color: var(--brass); flex-shrink: 0; }
+    .member-select { background: var(--surface-raised); border: 1px solid var(--line-bright); color: var(--text); padding: 6px 10px; border-radius: 8px; font-size: 12px; outline: none; max-width: 150px; }
+
+    .group-row { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; }
+    .group-chip { flex-shrink: 0; border: 1px solid var(--line); background: var(--surface-raised); color: var(--muted); border-radius: 10px; padding: 8px 12px; font-size: 12px; cursor: pointer; }
+    .group-chip.active { border-color: var(--brass); color: var(--text); font-weight: 700; }
+
     .kpi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     .kpi-card { background: var(--surface-raised); border: 1px solid var(--line); border-radius: 10px; padding: 12px; }
     .kpi-label { font-size: 10px; color: var(--muted); text-transform: uppercase; font-family: monospace; }
@@ -53,39 +50,52 @@
     .credit-val { color: var(--credit); }
     .debit-val { color: var(--debit); }
 
-    /* Calendar Grid */
     .cal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
     .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; }
     .cal-weekday { font-size: 10px; color: var(--muted); font-family: monospace; padding: 4px 0; }
-    .cal-day { aspect-ratio: 1; border-radius: 6px; background: var(--surface-raised); border: 1px solid var(--line); display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 11px; cursor: pointer; }
+    .cal-day { aspect-ratio: 1; border-radius: 6px; background: var(--surface-raised); border: 1px solid var(--line); display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 11px; cursor: pointer; color: var(--text); }
     .cal-day.has-spend { border-color: var(--brass); background: var(--brass-dim); color: var(--brass); font-weight: 700; }
     .cal-day.today { border-color: var(--credit); }
+    .cal-day.filtered { outline: 2px solid var(--brass); }
 
-    /* Expense List */
-    .exp-item { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--line); }
+    .exp-item { padding: 12px 0; border-bottom: 1px solid var(--line); }
     .exp-item:last-child { border-bottom: none; }
-    .exp-left { display: flex; align-items: center; gap: 10px; }
-    .exp-icon { width: 32px; height: 32px; border-radius: 8px; background: var(--surface-raised); display: flex; align-items: center; justify-content: center; font-size: 14px; }
+    .exp-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .exp-left { display: flex; align-items: center; gap: 10px; min-width: 0; }
+    .exp-icon { width: 32px; height: 32px; border-radius: 8px; background: var(--surface-raised); display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
     .exp-title { font-size: 13px; font-weight: 600; }
     .exp-meta { font-size: 11px; color: var(--muted); margin-top: 2px; }
-    .exp-amt { font-size: 14px; font-weight: 700; font-family: monospace; }
+    .exp-amt { font-size: 14px; font-weight: 700; font-family: monospace; white-space: nowrap; }
+    .exp-sub { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 6px; font-size: 11px; color: var(--muted); }
+    .exp-actions { display: flex; gap: 8px; }
+    .link-btn { background: none; border: none; font-size: 11px; cursor: pointer; color: var(--brass); }
+    .link-btn.danger { color: var(--debit); }
+    .tag { font-size: 9px; font-weight: 700; padding: 1px 6px; border-radius: 4px; background: var(--surface-raised); border: 1px solid var(--line); color: var(--brass); text-transform: uppercase; }
 
-    /* Action buttons */
+    .bal-row { display: flex; align-items: baseline; justify-content: space-between; padding: 8px 0; border-bottom: 1px dotted var(--line-bright); font-size: 12px; }
+    .bal-row:last-child { border-bottom: none; }
+
     .btn-main { background: var(--brass); color: #000; border: none; padding: 12px; border-radius: var(--radius); font-size: 14px; font-weight: 700; width: 100%; cursor: pointer; text-align: center; display: block; }
     .btn-secondary { background: var(--surface-raised); border: 1px solid var(--line); color: var(--muted); padding: 8px 12px; border-radius: 8px; font-size: 12px; cursor: pointer; }
 
-    /* Modal dialogs */
     .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 100; align-items: center; justify-content: center; padding: 16px; }
     .modal.active { display: flex; }
-    .modal-box { background: var(--surface); border: 1px solid var(--line-bright); border-radius: var(--radius); padding: 20px; width: 100%; max-width: 400px; }
+    .modal-box { background: var(--surface); border: 1px solid var(--line-bright); border-radius: var(--radius); padding: 20px; width: 100%; max-width: 420px; max-height: 92vh; overflow-y: auto; }
     .modal-title { font-size: 16px; font-weight: 700; margin-bottom: 12px; display: flex; justify-content: space-between; }
     .input-row { margin-bottom: 12px; }
     .input-row label { display: block; font-size: 11px; color: var(--muted); margin-bottom: 4px; }
     .input-field { width: 100%; background: var(--canvas); border: 1px solid var(--line-bright); color: var(--text); padding: 10px; border-radius: 8px; font-size: 13px; outline: none; }
+    .radio-row { display: flex; gap: 8px; flex-wrap: wrap; }
+    .radio-chip { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; font-size: 12px; color: var(--muted); cursor: pointer; }
+    .radio-chip.on { border-color: var(--brass); color: var(--text); font-weight: 700; }
+    .radio-chip input { accent-color: var(--brass); }
+
+    .login-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; max-height: 300px; overflow-y: auto; }
+    .login-chip { border: 1px solid var(--line); background: var(--surface-raised); color: var(--text); border-radius: 8px; padding: 10px; font-size: 12px; cursor: pointer; text-align: left; }
+    .google-btn { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--line-bright); background: var(--surface-raised); color: var(--text); font-size: 13px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
   </style>
 </head>
 <body>
-  <!-- Header -->
   <header class="header">
     <div class="brand">
       <span class="pulse-dot"></span>
@@ -95,264 +105,492 @@
     <button class="btn-secondary" onclick="openServerConfig()">⚙️ Server</button>
   </header>
 
-  <!-- Server connection indicator -->
   <div class="server-bar">
     <div class="server-status">
       <span style="color: var(--credit);">●</span>
-      <span id="serverUrlText">Tester Standalone Build</span>
+      <span id="serverUrlText">Offline bundle · v1.2.0</span>
     </div>
     <button class="btn-connect" onclick="connectLive()">Connect Live ⚡</button>
   </div>
 
-  <div class="container">
-    <!-- Active Member Bar -->
+  <!-- ============ LOGIN SCREEN ============ -->
+  <div class="container" id="screen-login">
+    <div class="card">
+      <div style="text-align:center; margin-bottom: 14px;">
+        <div style="font-size: 18px; font-weight: 800;">Sign In to SplitOps</div>
+        <div style="font-size: 11px; color: var(--muted); margin-top: 4px;">Google sign-in or 1-tap member select</div>
+      </div>
+      <button class="google-btn" data-testid="apk-google-signin" onclick="openGoogleModal()">
+        <span style="font-weight: 800;"><span style="color:#4285F4;">G</span><span style="color:#EA4335;">o</span><span style="color:#FBBC05;">o</span><span style="color:#4285F4;">g</span><span style="color:#34A853;">l</span><span style="color:#EA4335;">e</span></span>
+        <span>Continue with Google</span>
+      </button>
+      <div style="text-align:center; font-size: 10px; color: var(--muted); margin: 12px 0; text-transform: uppercase;">or 1-tap select member</div>
+      <div class="login-grid" id="loginGrid" data-testid="apk-login-grid"></div>
+      <div style="display:flex; gap: 8px; margin-top: 12px;">
+        <input class="input-field" id="guestName" data-testid="apk-guest-input" placeholder="Guest name" />
+        <button class="btn-secondary" data-testid="apk-guest-submit" onclick="guestLogin()">Enter →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ APP SCREEN ============ -->
+  <div class="container" id="screen-app" style="display: none;">
     <div class="card member-bar">
       <div class="member-info">
         <div class="avatar" id="avatarInitial">Z</div>
-        <div>
-          <div style="font-size: 13px; font-weight: 700;" id="currentUserName">Zubair (Owner)</div>
-          <div style="font-size: 11px; color: var(--muted);">SplitOps Primary Group · 15 Members</div>
+        <div style="min-width: 0;">
+          <div style="font-size: 13px; font-weight: 700;" id="currentUserName">Zubair</div>
+          <div style="font-size: 11px; color: var(--muted);" id="currentGroupName">SplitOps · 15 members</div>
         </div>
       </div>
-      <select class="member-select" id="memberSelect" onchange="changeMember()">
-        <option value="Zubair">Zubair (Owner)</option>
-        <option value="Pranu">Pranu</option>
-        <option value="Abhi">Abhi Venkata Sai</option>
-        <option value="Pavan">Pavan Sai</option>
-        <option value="Prasanth">Prasanth</option>
-        <option value="Ajay">Ajay</option>
-        <option value="Devi">Devi</option>
-        <option value="Hassi">Hassi</option>
-      </select>
+      <div style="display:flex; gap: 6px; align-items: center;">
+        <select class="member-select" id="memberSelect" data-testid="apk-member-select" onchange="changeMember()"></select>
+        <button class="btn-secondary" data-testid="apk-switch-user" onclick="logout()">Switch</button>
+      </div>
     </div>
 
-    <!-- Monthly Dashboard Cards -->
+    <div class="card">
+      <div style="font-size: 11px; color: var(--muted); margin-bottom: 8px; text-transform: uppercase;">Groups</div>
+      <div class="group-row" id="groupRow" data-testid="apk-group-row"></div>
+    </div>
+
     <div class="card">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-        <span style="font-size: 11px; font-family: monospace; color: var(--brass); text-transform: uppercase;">This Month · September 2026</span>
-        <button class="btn-secondary" onclick="toggleCalendar()" id="calToggleBtn">📅 Calendar</button>
+        <span style="font-size: 11px; font-family: monospace; color: var(--brass); text-transform: uppercase;" id="dashTitle">This Month</span>
+        <button class="btn-secondary" data-testid="apk-cal-toggle" onclick="toggleCalendar()" id="calToggleBtn">📅 Calendar</button>
       </div>
-
       <div class="kpi-grid">
-        <div class="kpi-card">
-          <div class="kpi-label">Total Spent</div>
-          <div class="kpi-val" id="totalSpentDisplay">₹ 0.00</div>
-        </div>
-        <div class="kpi-card">
-          <div class="kpi-label">Fair Share</div>
-          <div class="kpi-val" id="fairShareDisplay">₹ 0.00</div>
-        </div>
-        <div class="kpi-card">
-          <div class="kpi-label">You Paid</div>
-          <div class="kpi-val credit-val" id="youPaidDisplay">₹ 0.00</div>
-        </div>
-        <div class="kpi-card">
-          <div class="kpi-label">Net Position</div>
-          <div class="kpi-val" id="netPositionDisplay">₹ 0.00</div>
-        </div>
+        <div class="kpi-card"><div class="kpi-label">Total Spent</div><div class="kpi-val" id="totalSpentDisplay">₹ 0.00</div></div>
+        <div class="kpi-card"><div class="kpi-label">Fair Share</div><div class="kpi-val" id="fairShareDisplay">₹ 0.00</div></div>
+        <div class="kpi-card"><div class="kpi-label">You Paid</div><div class="kpi-val credit-val" id="youPaidDisplay">₹ 0.00</div></div>
+        <div class="kpi-card"><div class="kpi-label">Net Position</div><div class="kpi-val" id="netPositionDisplay">₹ 0.00</div></div>
       </div>
-
-      <!-- Calendar View (Hidden by default) -->
       <div id="calendarSection" style="display: none; margin-top: 16px; border-top: 1px solid var(--line); padding-top: 12px;">
         <div class="cal-header">
-          <span style="font-size: 12px; font-weight: 700;">September 2026</span>
-          <span style="font-size: 11px; color: var(--muted);">Tap day to filter</span>
+          <span style="font-size: 12px; font-weight: 700;" id="calTitle">Month</span>
+          <span style="font-size: 11px; color: var(--muted);" id="calHint">Tap day to filter</span>
         </div>
         <div class="cal-grid" id="calendarGrid"></div>
       </div>
     </div>
 
-    <!-- Add Expense CTA -->
-    <button class="btn-main" onclick="openExpenseModal()">+ Add Split Expense</button>
+    <div class="card">
+      <div style="font-size: 13px; font-weight: 700; margin-bottom: 8px;">Net Balances (₹ INR)</div>
+      <div id="balanceList"><div style="font-size: 12px; color: var(--muted);">All settled up. 🎉</div></div>
+    </div>
 
-    <!-- Expense History -->
+    <button class="btn-main" data-testid="apk-add-expense" onclick="openExpenseModal()">+ Add Split Expense</button>
+
     <div class="card">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-        <span style="font-size: 13px; font-weight: 700;">Expense History</span>
-        <button class="btn-secondary" onclick="clearHistory()" style="color: var(--debit);">🗑 Clear</button>
+        <span style="font-size: 13px; font-weight: 700;">Expense History <span style="font-size: 11px; color: var(--muted);" id="expCount"></span></span>
+        <button class="btn-secondary" data-testid="apk-clear-history" onclick="clearHistory()" style="color: var(--debit);">🗑 Clear</button>
       </div>
-      <div id="expenseList">
-        <div style="text-align: center; padding: 24px 0; color: var(--muted); font-size: 12px;">
-          No expenses recorded yet.<br>Default ledger is clean at ₹0.00.
-        </div>
-      </div>
+      <div id="expenseList"></div>
+    </div>
+  </div>
+
+  <!-- Google chooser modal -->
+  <div class="modal" id="googleModal">
+    <div class="modal-box">
+      <div class="modal-title"><span>Choose Google account</span><span style="cursor:pointer;" onclick="closeGoogleModal()">✕</span></div>
+      <button class="google-btn" style="margin-bottom: 8px;" data-testid="apk-google-account" onclick="googleLogin('Praneeth S')">
+        <span class="avatar" style="width:28px; height:28px; font-size:12px;">P</span>
+        <span style="text-align:left;"><span style="display:block; font-size:12px;">Praneeth S</span><span style="display:block; font-size:10px; color: var(--muted);">praneethssr.2002@gmail.com</span></span>
+      </button>
+      <div class="input-row"><label>Or enter any Google email</label><input class="input-field" id="googleEmail" placeholder="name@gmail.com" /></div>
+      <button class="btn-main" onclick="googleLoginCustom()">Continue with this Email</button>
     </div>
   </div>
 
   <!-- Add Expense Modal -->
   <div class="modal" id="expenseModal">
     <div class="modal-box">
-      <div class="modal-title">
-        <span>Add Split Expense</span>
-        <span style="cursor: pointer;" onclick="closeModal()">✕</span>
-      </div>
+      <div class="modal-title"><span>Add Split Expense</span><span style="cursor: pointer;" onclick="closeModal()">✕</span></div>
+      <div class="input-row"><label>Description</label><input class="input-field" id="expDesc" data-testid="apk-exp-desc" placeholder="e.g. Dinner, Snacks, Turf" /></div>
+      <div class="input-row"><label>Amount (₹ INR)</label><input class="input-field" id="expAmount" data-testid="apk-exp-amount" type="number" step="0.01" min="0" placeholder="450.00" /></div>
       <div class="input-row">
-        <label>Description</label>
-        <input class="input-field" id="expDesc" placeholder="e.g. Dinner, Snacks, Turf" />
+        <label>Transport (fare adds to bill)</label>
+        <div class="radio-row" role="radiogroup" aria-label="Transport mode">
+          <label class="radio-chip" data-testid="apk-transport-none"><input type="radio" name="tmode" value="NONE" checked onchange="transportChanged()" /> ➖ None</label>
+          <label class="radio-chip" data-testid="apk-transport-cab"><input type="radio" name="tmode" value="CAB" onchange="transportChanged()" /> 🚕 Cab</label>
+          <label class="radio-chip" data-testid="apk-transport-bike"><input type="radio" name="tmode" value="BIKE" onchange="transportChanged()" /> 🏍️ Bike</label>
+        </div>
       </div>
-      <div class="input-row">
-        <label>Amount (₹ INR)</label>
-        <input class="input-field" id="expAmount" type="number" step="0.01" placeholder="450.00" />
-      </div>
+      <div class="input-row" id="fareRow" style="display:none;"><label>Fare (₹)</label><input class="input-field" id="expFare" data-testid="apk-exp-fare" type="number" step="0.01" min="0" placeholder="120.00" oninput="fareChanged()" /></div>
+      <div class="input-row" id="totalRow" style="display:none; font-size: 12px; color: var(--brass); font-family: monospace;"></div>
       <div class="input-row">
         <label>Split Method</label>
-        <select class="input-field" id="expSplitMethod">
+        <select class="input-field" id="expSplitMethod" data-testid="apk-exp-split">
           <option value="EQUAL">Equal Split</option>
           <option value="EXACT">Exact Rupee Split</option>
           <option value="PERCENTAGE">Percentage Split</option>
           <option value="SHARES">Shares Split</option>
         </select>
       </div>
-      <div class="input-row">
-        <label>Paid By</label>
-        <select class="input-field" id="expPaidBy">
-          <option value="Zubair">Zubair (Owner)</option>
-          <option value="Pranu">Pranu</option>
-          <option value="Abhi">Abhi</option>
-          <option value="Pavan">Pavan</option>
-          <option value="Prasanth">Prasanth</option>
-        </select>
-      </div>
-      <button class="btn-main" style="margin-top: 10px;" onclick="saveExpense()">Confirm & Split Bill</button>
+      <div class="input-row"><label>Paid By</label><select class="input-field" id="expPaidBy" data-testid="apk-exp-payer"></select></div>
+      <button class="btn-main" style="margin-top: 10px;" data-testid="apk-exp-save" onclick="saveExpense()">Confirm & Split Bill</button>
     </div>
   </div>
 
   <script>
-    let expenses = JSON.parse(localStorage.getItem("gg_offline_expenses") || "[]");
-    let currentMember = "Zubair";
+    "use strict";
+    // Single place to point the ONLINE mode at the live server.
+    var LIVE_URL = "https://eligibility-anthony-infinite-enjoyed.trycloudflare.com";
+
+    var MEMBERS = [
+      { id: "mem-zubair", name: "Zubair", owner: true },
+      { id: "mem-pranu", name: "Pranu" },
+      { id: "mem-abhi", name: "Abhi Venkata Sai Samsani" },
+      { id: "mem-pavan", name: "Pavan (Kasula Pavan Sai)" },
+      { id: "mem-prasanth", name: "Prasanth" },
+      { id: "mem-ajay", name: "Ajay" },
+      { id: "mem-ajayk", name: "Ajay Kumar" },
+      { id: "mem-dlip", name: "Dlip" },
+      { id: "mem-mouni", name: "Mouni" },
+      { id: "mem-sameena", name: "Sameena Sultana" },
+      { id: "mem-tharun", name: "Tharun Reddy" },
+      { id: "mem-uday", name: "Uday" },
+      { id: "mem-devi", name: "Devi" },
+      { id: "mem-hassi", name: "Hassi" },
+      { id: "mem-prakash", name: "Prakash" }
+    ];
+
+    var GROUPS = [
+      { id: "splitops", name: "SplitOps (Our GG Group)", icon: "💰" },
+      { id: "gachibowli-flat-4b", name: "Gachibowli Flat 4B", icon: "🏠" },
+      { id: "goa-trip-2026", name: "Goa Trip 2026", icon: "🏖️" },
+      { id: "weekend-cricket", name: "Weekend Cricket Club", icon: "🏏" }
+    ];
+
+    function store(key, val) {
+      try { localStorage.setItem(key, JSON.stringify(val)); } catch (e) {}
+    }
+    function load(key, fallback) {
+      try {
+        var raw = localStorage.getItem(key);
+        return raw ? JSON.parse(raw) : fallback;
+      } catch (e) { return fallback; }
+    }
+    function esc(s) {
+      return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+    }
+    function fmtDate(d) {
+      var months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+      return months[d.getMonth()] + " " + d.getDate() + ", " + d.getFullYear();
+    }
+    function dayKey(d) {
+      return d.getFullYear() + "-" + d.getMonth() + "-" + d.getDate();
+    }
+
+    var currentUser = load("gg_user", null);
+    var activeGroupId = load("gg_group", "splitops");
+    var dayFilter = null;
+
+    function expensesKey() { return "gg_exp_" + activeGroupId; }
+    function getExpenses() { return load(expensesKey(), []); }
+    function setExpenses(list) { store(expensesKey(), list); }
+    function memberName(id) {
+      for (var i = 0; i < MEMBERS.length; i++) {
+        if (MEMBERS[i].id === id) return MEMBERS[i].name;
+      }
+      return "Member";
+    }
+
+    /* ---------- login ---------- */
+    function renderLogin() {
+      var grid = document.getElementById("loginGrid");
+      grid.innerHTML = MEMBERS.map(function (m) {
+        return '<button class="login-chip" data-testid="apk-login-' + m.id + '" onclick="loginAs(\'' + m.id + '\')">' +
+          esc(m.name) + (m.owner ? ' <span class="tag">Owner</span>' : '') + '</button>';
+      }).join("");
+    }
+    function enterApp() {
+      document.getElementById("screen-login").style.display = "none";
+      document.getElementById("screen-app").style.display = "flex";
+      renderAll();
+    }
+    function loginAs(id) {
+      var found = null;
+      for (var i = 0; i < MEMBERS.length; i++) { if (MEMBERS[i].id === id) found = MEMBERS[i]; }
+      currentUser = { id: id, name: found ? found.name : "Member", tag: null };
+      store("gg_user", currentUser);
+      enterApp();
+    }
+    function guestLogin() {
+      var name = document.getElementById("guestName").value.trim();
+      if (!name) return;
+      currentUser = { id: "guest-" + Date.now(), name: name, tag: "Guest" };
+      store("gg_user", currentUser);
+      enterApp();
+    }
+    function openGoogleModal() { document.getElementById("googleModal").classList.add("active"); }
+    function closeGoogleModal() { document.getElementById("googleModal").classList.remove("active"); }
+    function googleLogin(name) {
+      currentUser = { id: "google-" + Date.now(), name: name, tag: "Google" };
+      store("gg_user", currentUser);
+      closeGoogleModal();
+      enterApp();
+    }
+    function googleLoginCustom() {
+      var email = document.getElementById("googleEmail").value.trim();
+      var name = email.indexOf("@") > 0 ? email.split("@")[0] : (email || "Google User");
+      googleLogin(name);
+    }
+    function logout() {
+      currentUser = null;
+      try { localStorage.removeItem("gg_user"); } catch (e) {}
+      document.getElementById("screen-app").style.display = "none";
+      document.getElementById("screen-login").style.display = "flex";
+    }
+
+    /* ---------- groups + members ---------- */
+    function renderGroups() {
+      var row = document.getElementById("groupRow");
+      row.innerHTML = GROUPS.map(function (g) {
+        return '<button class="group-chip' + (g.id === activeGroupId ? ' active' : '') + '" data-testid="apk-group-' + g.id + '" onclick="switchGroup(\'' + g.id + '\')">' + g.icon + ' ' + esc(g.name) + '</button>';
+      }).join("");
+      var g = null;
+      for (var i = 0; i < GROUPS.length; i++) { if (GROUPS[i].id === activeGroupId) g = GROUPS[i]; }
+      document.getElementById("currentGroupName").innerText = (g ? g.name : "SplitOps") + " · 15 members";
+    }
+    function switchGroup(id) {
+      activeGroupId = id;
+      dayFilter = null;
+      store("gg_group", id);
+      renderAll();
+    }
+    function renderMemberSelect() {
+      var sel = document.getElementById("memberSelect");
+      sel.innerHTML = MEMBERS.map(function (m) {
+        return '<option value="' + m.id + '"' + (currentUser && currentUser.id === m.id ? ' selected' : '') + '>' + esc(m.name) + (m.owner ? ' (Owner)' : '') + '</option>';
+      }).join("");
+      var payer = document.getElementById("expPaidBy");
+      payer.innerHTML = MEMBERS.map(function (m) {
+        return '<option value="' + m.id + '">' + esc(m.name) + '</option>';
+      }).join("");
+      if (currentUser) {
+        document.getElementById("currentUserName").innerText = currentUser.name + (currentUser.tag ? " (" + currentUser.tag + ")" : "");
+        document.getElementById("avatarInitial").innerText = currentUser.name.charAt(0).toUpperCase();
+      }
+    }
+    function changeMember() {
+      var id = document.getElementById("memberSelect").value;
+      loginAs(id);
+    }
+
+    /* ---------- dashboard + balances ---------- */
+    function computeBalances(expenses) {
+      var map = {};
+      MEMBERS.forEach(function (m) { map[m.id] = 0; });
+      expenses.forEach(function (e) {
+        var amt = Number(e.amount) || 0;
+        map[e.payerId] = (map[e.payerId] || 0) + amt;
+        var n = MEMBERS.length;
+        MEMBERS.forEach(function (m) { map[m.id] = (map[m.id] || 0) - amt / n; });
+      });
+      return MEMBERS.map(function (m) {
+        var net = Math.round((map[m.id] || 0) * 100) / 100;
+        return { id: m.id, name: m.name, amount: net };
+      });
+    }
+
+    function visibleExpenses() {
+      var all = getExpenses();
+      if (!dayFilter) return all;
+      return all.filter(function (e) { return e.day === dayFilter; });
+    }
 
     function updateUI() {
-      const total = expenses.reduce((acc, e) => acc + Number(e.amount), 0);
-      const youPaid = expenses.filter(e => e.paidBy === currentMember).reduce((acc, e) => acc + Number(e.amount), 0);
-      const fairShare = expenses.length > 0 ? (total / 15) : 0;
-      const net = youPaid - fairShare;
+      var now = new Date();
+      var monthLabel = now.toLocaleString("en-US", { month: "long", year: "numeric" });
+      document.getElementById("dashTitle").innerText = "This Month · " + monthLabel;
+      document.getElementById("calTitle").innerText = monthLabel;
+
+      var expenses = visibleExpenses();
+      var total = expenses.reduce(function (acc, e) { return acc + (Number(e.amount) || 0); }, 0);
+      var youPaid = expenses.filter(function (e) { return currentUser && e.payerId === currentUser.id; })
+        .reduce(function (acc, e) { return acc + (Number(e.amount) || 0); }, 0);
+      var fairShare = expenses.length > 0 ? total / MEMBERS.length : 0;
+      var net = Math.round((youPaid - fairShare) * 100) / 100;
 
       document.getElementById("totalSpentDisplay").innerText = "₹ " + total.toFixed(2);
       document.getElementById("fairShareDisplay").innerText = "₹ " + fairShare.toFixed(2);
       document.getElementById("youPaidDisplay").innerText = "₹ " + youPaid.toFixed(2);
-      
-      const netEl = document.getElementById("netPositionDisplay");
-      if (net > 0) {
-        netEl.innerText = "+₹ " + net.toFixed(2);
-        netEl.className = "kpi-val credit-val";
-      } else if (net < 0) {
-        netEl.innerText = "-₹ " + Math.abs(net).toFixed(2);
-        netEl.className = "kpi-val debit-val";
+      var netEl = document.getElementById("netPositionDisplay");
+      if (net > 0) { netEl.innerText = "+₹ " + net.toFixed(2); netEl.className = "kpi-val credit-val"; }
+      else if (net < 0) { netEl.innerText = "-₹ " + Math.abs(net).toFixed(2); netEl.className = "kpi-val debit-val"; }
+      else { netEl.innerText = "₹ 0.00"; netEl.className = "kpi-val"; }
+
+      var balances = computeBalances(expenses).filter(function (b) { return Math.abs(b.amount) >= 0.005; });
+      var balEl = document.getElementById("balanceList");
+      if (balances.length === 0) {
+        balEl.innerHTML = '<div style="font-size: 12px; color: var(--muted);">All settled up. 🎉</div>';
       } else {
-        netEl.innerText = "₹ 0.00";
-        netEl.className = "kpi-val";
+        balEl.innerHTML = balances.map(function (b) {
+          var cls = b.amount > 0 ? "credit-val" : "debit-val";
+          var note = b.amount > 0 ? "is owed" : (b.amount < 0 ? "owes" : "settled");
+          return '<div class="bal-row"><span>' + esc(b.name) + '</span><span class="kpi-val ' + cls + '" style="font-size:13px;">₹ ' + b.amount.toFixed(2) + ' <span style="font-size:10px; color: var(--muted);">' + note + '</span></span></div>';
+        }).join("");
       }
 
-      const listEl = document.getElementById("expenseList");
+      document.getElementById("expCount").innerText = "(" + expenses.length + ")";
+      var listEl = document.getElementById("expenseList");
       if (expenses.length === 0) {
         listEl.innerHTML = '<div style="text-align: center; padding: 24px 0; color: var(--muted); font-size: 12px;">No expenses recorded yet.<br>Default ledger is clean at ₹0.00.</div>';
       } else {
-        listEl.innerHTML = expenses.map(e => `
-          <div class="exp-item">
-            <div class="exp-left">
-              <div class="exp-icon">🧾</div>
-              <div>
-                <div class="exp-title">${e.desc}</div>
-                <div class="exp-meta">Paid by ${e.paidBy} · ${e.date} · ${e.splitMethod}</div>
-              </div>
-            </div>
-            <div class="exp-amt">₹ ${Number(e.amount).toFixed(2)}</div>
-          </div>
-        `).join("");
+        listEl.innerHTML = expenses.map(function (e) {
+          var t = "";
+          if (e.transport && e.transport.mode !== "NONE") {
+            t = ' <span class="tag">' + (e.transport.mode === "CAB" ? "🚕" : "🏍️") + " +₹" + e.transport.fare + "</span>";
+          }
+          return '<div class="exp-item" data-testid="apk-expense-' + e.id + '">' +
+            '<div class="exp-top"><div class="exp-left"><div class="exp-icon">🧾</div>' +
+            '<div><div class="exp-title">' + esc(e.desc) + t + '</div>' +
+            '<div class="exp-meta">Paid by ' + esc(e.payerName) + ' · ' + esc(e.date) + ' · ' + esc(e.splitMethod) + '</div></div></div>' +
+            '<div class="exp-amt">₹ ' + Number(e.amount).toFixed(2) + '</div></div>' +
+            '<div class="exp-sub"><span>Last edited by ' + esc(e.editedBy) + ' at ' + esc(e.editedAt) + '</span>' +
+            '<span class="exp-actions"><button class="link-btn" onclick="deleteExpense(\'' + e.id + '\')">✕ Delete</button></span></div>' +
+            '</div>';
+        }).join("");
       }
-
       renderCalendar();
     }
 
     function renderCalendar() {
-      const grid = document.getElementById("calendarGrid");
-      grid.innerHTML = ["S","M","T","W","T","F","S"].map(d => `<div class="cal-weekday">${d}</div>`).join("");
-      
-      // September 2026 starts on Tuesday (offset 2)
-      for (let i = 0; i < 2; i++) {
-        grid.innerHTML += '<div></div>';
+      var now = new Date();
+      var year = now.getFullYear(), month = now.getMonth();
+      var grid = document.getElementById("calendarGrid");
+      var html = ["S","M","T","W","T","F","S"].map(function (d) { return '<div class="cal-weekday">' + d + '</div>'; }).join("");
+      var first = new Date(year, month, 1).getDay();
+      var days = new Date(year, month + 1, 0).getDate();
+      var all = getExpenses();
+      for (var i = 0; i < first; i++) { html += "<div></div>"; }
+      for (var day = 1; day <= days; day++) {
+        var key = year + "-" + month + "-" + day;
+        var hasSpend = false;
+        for (var k = 0; k < all.length; k++) { if (all[k].day === key) { hasSpend = true; break; } }
+        var isToday = day === now.getDate();
+        var active = dayFilter === key ? " filtered" : "";
+        html += '<div class="cal-day' + (hasSpend ? " has-spend" : "") + (isToday ? " today" : "") + active + '" onclick="filterDay(\'' + key + '\')">' + day + '</div>';
       }
-      for (let day = 1; day <= 30; day++) {
-        const dateStr = `Sep ${day}`;
-        const hasSpend = expenses.some(e => e.date.includes(dateStr));
-        const isToday = day === 21;
-        grid.innerHTML += `<div class="cal-day ${hasSpend ? 'has-spend' : ''} ${isToday ? 'today' : ''}" onclick="filterDay('${dateStr}')">${day}</div>`;
-      }
+      grid.innerHTML = html;
+      document.getElementById("calHint").innerText = dayFilter ? "Filter on — tap day again to clear" : "Tap day to filter";
     }
 
-    function changeMember() {
-      currentMember = document.getElementById("memberSelect").value;
-      document.getElementById("currentUserName").innerText = currentMember;
-      document.getElementById("avatarInitial").innerText = currentMember.charAt(0);
+    function filterDay(key) {
+      dayFilter = (dayFilter === key) ? null : key;
       updateUI();
     }
 
     function toggleCalendar() {
-      const sec = document.getElementById("calendarSection");
-      const btn = document.getElementById("calToggleBtn");
-      if (sec.style.display === "none") {
-        sec.style.display = "block";
-        btn.innerText = "Cards";
-      } else {
-        sec.style.display = "none";
-        btn.innerText = "📅 Calendar";
+      var sec = document.getElementById("calendarSection");
+      var btn = document.getElementById("calToggleBtn");
+      if (sec.style.display === "none") { sec.style.display = "block"; btn.innerText = "Cards"; }
+      else { sec.style.display = "none"; btn.innerText = "📅 Calendar"; }
+    }
+
+    /* ---------- expenses ---------- */
+    function selectedTransport() {
+      var els = document.getElementsByName("tmode");
+      for (var i = 0; i < els.length; i++) { if (els[i].checked) return els[i].value; }
+      return "NONE";
+    }
+    function transportChanged() {
+      var mode = selectedTransport();
+      document.getElementById("fareRow").style.display = mode === "NONE" ? "none" : "block";
+      var chips = document.querySelectorAll(".radio-chip");
+      for (var i = 0; i < chips.length; i++) {
+        var input = chips[i].querySelector("input");
+        if (input && input.checked) chips[i].classList.add("on");
+        else chips[i].classList.remove("on");
       }
+      fareChanged();
+    }
+    function currentBillTotal() {
+      var base = parseFloat(document.getElementById("expAmount").value) || 0;
+      var fare = selectedTransport() === "NONE" ? 0 : (parseFloat(document.getElementById("expFare").value) || 0);
+      return Math.round((base + fare) * 100) / 100;
+    }
+    function fareChanged() {
+      var mode = selectedTransport();
+      var row = document.getElementById("totalRow");
+      if (mode === "NONE") { row.style.display = "none"; return; }
+      var base = parseFloat(document.getElementById("expAmount").value) || 0;
+      var fare = parseFloat(document.getElementById("expFare").value) || 0;
+      var total = Math.round((base + fare) * 100) / 100;
+      row.style.display = "block";
+      row.innerText = "Bill ₹" + base.toFixed(2) + " + " + (mode === "CAB" ? "Cab" : "Bike") + " ₹" + fare.toFixed(2) + " = ₹" + total.toFixed(2);
     }
 
     function openExpenseModal() {
       document.getElementById("expenseModal").classList.add("active");
+      transportChanged();
     }
-
-    function closeModal() {
-      document.getElementById("expenseModal").classList.remove("active");
-    }
+    function closeModal() { document.getElementById("expenseModal").classList.remove("active"); }
 
     function saveExpense() {
-      const desc = document.getElementById("expDesc").value.trim() || "Expense";
-      const amount = parseFloat(document.getElementById("expAmount").value) || 0;
-      const splitMethod = document.getElementById("expSplitMethod").value;
-      const paidBy = document.getElementById("expPaidBy").value;
-
-      if (amount <= 0) {
-        alert("Please enter a valid amount greater than ₹0");
-        return;
-      }
-
-      const today = "Sep 21, 2026";
-      expenses.unshift({ desc, amount, splitMethod, paidBy, date: today });
-      localStorage.setItem("gg_offline_expenses", JSON.stringify(expenses));
+      var desc = document.getElementById("expDesc").value.trim() || "Expense";
+      var total = currentBillTotal();
+      var mode = selectedTransport();
+      var fare = mode === "NONE" ? 0 : (parseFloat(document.getElementById("expFare").value) || 0);
+      var splitMethod = document.getElementById("expSplitMethod").value;
+      var payerId = document.getElementById("expPaidBy").value;
+      if (total <= 0) { alert("Please enter a valid amount greater than ₹0"); return; }
+      var now = new Date();
+      var list = getExpenses();
+      list.unshift({
+        id: "exp-" + Date.now(),
+        desc: desc,
+        amount: total.toFixed(2),
+        transport: mode === "NONE" ? null : { mode: mode, fare: fare.toFixed(2) },
+        splitMethod: splitMethod,
+        payerId: payerId,
+        payerName: memberName(payerId),
+        date: fmtDate(now),
+        day: dayKey(now),
+        editedBy: currentUser ? currentUser.name : "Member",
+        editedAt: now.toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" })
+      });
+      setExpenses(list);
       closeModal();
-      document.getElementById("expAmount").value = "";
       document.getElementById("expDesc").value = "";
+      document.getElementById("expAmount").value = "";
+      document.getElementById("expFare").value = "";
       updateUI();
     }
 
+    function deleteExpense(id) {
+      if (!confirm("Delete this expense? Balances will recalculate.")) return;
+      var list = getExpenses().filter(function (e) { return e.id !== id; });
+      setExpenses(list);
+      updateUI();
+    }
     function clearHistory() {
-      if (confirm("Reset ledger to ₹0.00 and delete all expenses?")) {
-        expenses = [];
-        localStorage.removeItem("gg_offline_expenses");
+      var list = getExpenses();
+      if (list.length === 0) return;
+      if (confirm("Delete all " + list.length + " expenses in this group? Balances reset to zero.")) {
+        setExpenses([]);
         updateUI();
       }
     }
 
-    function filterDay(d) {
-      alert("Filtering expenses for " + d);
-    }
-
+    /* ---------- online / offline ---------- */
     function openServerConfig() {
-      if (window.MainActivity && window.MainActivity.showServerUrlDialog) {
-        window.MainActivity.showServerUrlDialog();
-      } else {
-        const url = prompt("Enter Server URL to connect:", "http://10.218.180.144:3000");
-        if (url) window.location.href = url;
-      }
+      var url = prompt("Enter the live server URL (or Cancel for offline):", LIVE_URL);
+      if (url && url.trim()) { window.location.href = url.trim(); }
+    }
+    function connectLive() { window.location.href = LIVE_URL; }
+
+    function renderAll() {
+      renderGroups();
+      renderMemberSelect();
+      updateUI();
     }
 
-    function connectLive() {
-      window.location.href = "https://duplicate-european-possess-compute.trycloudflare.com";
-    }
-
-    updateUI();
+    renderLogin();
+    if (currentUser) { enterApp(); }
+    else { updateUI(); }
   </script>
 </body>
 </html>

@@ -170,3 +170,18 @@ fix the isuess
 - Security: web `next.config.ts` now sends `X-Content-Type-Options`, `X-Frame-Options: DENY`, strict `Referrer-Policy`, and minimal `Permissions-Policy` (verified live); API already enforces `secureHeaders`, single-origin CORS + CSRF, and `requireAuth` on all routes (kept, not weakened); verified `.env` is git-ignored, no secret files tracked, no hardcoded secrets in source. DB still uses local dev credentials — rotate to strong secrets before any production deploy.
 - Verified: web typecheck clean, web lint 0 errors, core tests 30/30, rebuilt + restarted `splitbills-web`, confirmed new bundle in the container, `/groups` 200 locally and over the fresh tunnel link with all testids present and zero invalid CSS.
 - New tester link (old quick tunnel expired): `https://eligibility-anthony-infinite-enjoyed.trycloudflare.com`.
+
+---
+
+## Prompt 11
+**User Request:**
+```text
+push into main
+steadfastly do it
+git@github.com:pr540/GACHIBOWLI-GALIDITOR.git it is ssh
+<screenshot of GitHub "Add new SSH Key" page>
+push into main
+```
+**Actions Taken:**
+- Staged and committed all work as `9f02f6a` ("feat(web): eslint flat config, offline-first groups, cab/bike transport, Tosca testids, security headers", 31 files).
+- Push initially failed with `Permission denied (publickey)`; diagnosed the machine's ed25519 key was not registered on GitHub, gave the user the exact public key to add, and pushed successfully (`e60c74c..9f02f6a main -> main`) once the key was added.

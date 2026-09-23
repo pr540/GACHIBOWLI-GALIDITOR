@@ -216,6 +216,21 @@ do it fast
 - Online + offline: `default_server_url` now points at the live tunnel link (was a dead URL); offline bundle works with zero network.
 - Released **v1.2.0 (versionCode 3)**: rebuilt via `build-apk.sh`, `apksigner verify` clean, manifest confirms `com.splitops.ggsplitops` / 1.2.0 / code 3. Published as `ggsplitops.apk`, `ggsplitops-v1.2.0.apk` (root) and `ggsplitops/ggsplitops.apk` (identical bytes).
 - Test tools used: `node --check` (bundle JS syntax OK), `apksigner` + `apkanalyzer` (signature/manifest), `node --test` core suite 30/30, `curl` smoke (local :3000 → 200, tunnel → 200, API health ok).
+
+---
+
+## Prompt 15
+**User Request:**
+```text
+when the apk should not open fix the isuess
+<screenshot: Cloudflare Error 1033 on eligibility-anthony-...trycloudflare.com inside the app>
+```
+**Actions Taken:**
+- Root causes: (1) the quick tunnel expired server-side (Error 1033 = Cloudflare cannot resolve the tunnel), so the online URL was dead; (2) real app bug — `MainActivity` only overrode `onReceivedError`, but Cloudflare failure pages load with an HTTP error status, which goes to `onReceivedHttpError` instead, so the tester stared at the error page with no offline fallback.
+- Started a fresh tunnel (verified 200 + content) and pointed the app at it.
+- Fixed `MainActivity`: extracted `fallBackToOffline()` and call it from both `onReceivedError` and new `onReceivedHttpError` — any dead server/URL now drops to the offline bundle with an "Offline mode activated" toast.
+- Released **v1.3.0 (versionCode 4)**: rebuilt, `apksigner verify` clean, manifest confirms 1.3.0/code 4. Published as `ggsplitops.apk`, `ggsplitops-v1.3.0.apk`, `ggsplitops/ggsplitops.apk` (identical).
+- New tester link: `https://usb-retrieved-distributor-installation.trycloudflare.com`.
 - Note: the old `supplier-handed-...` tunnel link is dead (quick tunnels expire); the live tester link is `https://eligibility-anthony-infinite-enjoyed.trycloudflare.com` — the website itself was never broken.
 
 ---

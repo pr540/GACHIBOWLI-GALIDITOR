@@ -73,15 +73,29 @@ public class MainActivity extends Activity {
                 progressBar.setVisibility(View.GONE);
             }
 
+            // Offline-first: any failed online load drops back to the bundle.
+            private void fallBackToOffline(WebView view) {
+                String url = view.getUrl();
+                if (url == null || !url.equals(OFFLINE_URL)) {
+                    Toast.makeText(MainActivity.this, "Offline mode activated", Toast.LENGTH_SHORT).show();
+                    view.loadUrl(OFFLINE_URL);
+                }
+            }
+
             @Override
             public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
                 if (request != null && request.isForMainFrame()) {
-                    // Fall back to built-in offline asset
-                    String url = view.getUrl();
-                    if (url == null || !url.equals(OFFLINE_URL)) {
-                        Toast.makeText(MainActivity.this, "Offline mode activated", Toast.LENGTH_SHORT).show();
-                        view.loadUrl(OFFLINE_URL);
-                    }
+                    fallBackToOffline(view);
+                }
+            }
+
+            @Override
+            public void onReceivedHttpError(WebView view, WebResourceRequest request, android.webkit.WebResourceResponse errorResponse) {
+                // Cloudflare/CDN failure pages (e.g. tunnel Error 1033) load with
+                // an HTTP error status instead of a network error — without this
+                // the tester would stare at the error page instead of the app.
+                if (request != null && request.isForMainFrame()) {
+                    fallBackToOffline(view);
                 }
             }
         });

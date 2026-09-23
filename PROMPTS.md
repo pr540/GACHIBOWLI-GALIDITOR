@@ -217,3 +217,14 @@ do it fast
 - Released **v1.2.0 (versionCode 3)**: rebuilt via `build-apk.sh`, `apksigner verify` clean, manifest confirms `com.splitops.ggsplitops` / 1.2.0 / code 3. Published as `ggsplitops.apk`, `ggsplitops-v1.2.0.apk` (root) and `ggsplitops/ggsplitops.apk` (identical bytes).
 - Test tools used: `node --check` (bundle JS syntax OK), `apksigner` + `apkanalyzer` (signature/manifest), `node --test` core suite 30/30, `curl` smoke (local :3000 → 200, tunnel → 200, API health ok).
 - Note: the old `supplier-handed-...` tunnel link is dead (quick tunnels expire); the live tester link is `https://eligibility-anthony-infinite-enjoyed.trycloudflare.com` — the website itself was never broken.
+
+---
+
+## Prompt 13
+**User Request:**
+```text
+entied documentation and kt also give indetailed give me
+documetary
+```
+**Actions Taken:**
+- Wrote `DOCUMENTATION.md` (repo root): full KT documentary — what the system is, stack, layout, golden money/auth rules, feature/tester checklist, API table, DB tables, runbook (dev/docker/test/tunnel/APK/push), testing matrix with tools, security posture, troubleshooting table of solved issues, release log (v1.1.0/v1.2.0), and KT glossary.

@@ -12,7 +12,7 @@ export const SEED_MEMBERS = [
   { displayName: "Ajay Kumar", role: "MEMBER" as const },
   { displayName: "Dlip", role: "MEMBER" as const },
   { displayName: "Mouni", role: "MEMBER" as const },
-  { displayName: "Sameena Sultana", role: "MEMBER" as const },
+  { displayName: "Sameena Sultan", role: "MEMBER" as const },
   { displayName: "Tharun Reddy", role: "MEMBER" as const },
   { displayName: "Uday", role: "MEMBER" as const },
   { displayName: "Devi", role: "MEMBER" as const },

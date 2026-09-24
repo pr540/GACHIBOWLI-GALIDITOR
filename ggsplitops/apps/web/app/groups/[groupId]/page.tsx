@@ -29,7 +29,7 @@ const DEFAULT_SPLITOPS_MEMBERS: ManagedMember[] = [
   { id: "mem-ajayk", displayName: "Ajay Kumar", role: "MEMBER" },
   { id: "mem-dlip", displayName: "Dlip", role: "MEMBER" },
   { id: "mem-mouni", displayName: "Mouni", role: "MEMBER" },
-  { id: "mem-sameena", displayName: "Sameena Sultana", role: "MEMBER" },
+  { id: "mem-sameena", displayName: "Sameena Sultan", role: "MEMBER" },
   { id: "mem-tharun", displayName: "Tharun Reddy", role: "MEMBER" },
   { id: "mem-uday", displayName: "Uday", role: "MEMBER" },
   { id: "mem-devi", displayName: "Devi", role: "MEMBER" },

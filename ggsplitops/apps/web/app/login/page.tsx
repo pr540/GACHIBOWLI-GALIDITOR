@@ -18,7 +18,7 @@ const MEMBERS_LIST: ActiveUser[] = [
   { id: "mem-ajayk", name: "Ajay Kumar", role: "MEMBER" },
   { id: "mem-dlip", name: "Dlip", role: "MEMBER" },
   { id: "mem-mouni", name: "Mouni", role: "MEMBER" },
-  { id: "mem-sameena", name: "Sameena Sultana", role: "MEMBER" },
+  { id: "mem-sameena", name: "Sameena Sultan", role: "MEMBER" },
   { id: "mem-tharun", name: "Tharun Reddy", role: "MEMBER" },
   { id: "mem-uday", name: "Uday", role: "MEMBER" },
   { id: "mem-devi", name: "Devi", role: "MEMBER" },

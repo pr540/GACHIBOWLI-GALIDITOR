@@ -1,6 +1,6 @@
 {
   "name": "@splitbills/db",
-  "version": "0.1.0",
+  "version": "1.2.0",
   "private": true,
   "type": "module",
   "description": "Drizzle schema, client, and migrations for SplitBills.",

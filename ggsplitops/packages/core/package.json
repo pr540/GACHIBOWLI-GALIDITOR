@@ -1,6 +1,6 @@
 {
   "name": "@splitbills/core",
-  "version": "0.1.0",
+  "version": "1.2.0",
   "private": true,
   "type": "module",
   "description": "Pure domain engine: money, splits, balances, debt simplification. No I/O.",

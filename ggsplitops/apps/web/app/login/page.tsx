@@ -6,6 +6,7 @@ import { useState } from "react";
 
 import { ThemeToggle } from "../../components/theme-toggle";
 import { useActiveUser, type ActiveUser } from "../../lib/user-context";
+import { signIn, signUp } from "../../lib/auth-client";
 
 // 15 Default SplitOps Members
 const MEMBERS_LIST: ActiveUser[] = [
@@ -34,6 +35,32 @@ export default function LoginPage() {
   const [isGoogleSigningIn, setIsGoogleSigningIn] = useState(false);
   const [showGoogleModal, setShowGoogleModal] = useState(false);
   const [googleEmail, setGoogleEmail] = useState("");
+  const [authEmail, setAuthEmail] = useState("");
+  const [authPassword, setAuthPassword] = useState("");
+  const [authError, setAuthError] = useState("");
+  const [authPending, setAuthPending] = useState(false);
+
+  const handleEmailAuth = async (mode: "sign-in" | "sign-up") => {
+    setAuthError("");
+    setAuthPending(true);
+    const finish = (result: { error?: { message?: string } | null }) => {
+      setAuthPending(false);
+      if (result.error) {
+        setAuthError(result.error.message ?? "Authentication failed.");
+        return;
+      }
+      router.push("/groups");
+    };
+    try {
+      const result = mode === "sign-up"
+        ? await signUp.email({ email: authEmail, password: authPassword, name: authEmail.split("@")[0] || "SplitOps user" })
+        : await signIn.email({ email: authEmail, password: authPassword });
+      finish(result);
+    } catch (error) {
+      setAuthPending(false);
+      setAuthError(error instanceof Error ? error.message : "Authentication failed.");
+    }
+  };
 
   const handleSelectMember = (member: ActiveUser) => {
     switchUser(member);
@@ -204,6 +231,15 @@ export default function LoginPage() {
         </div>
 
         {/* Guest Nickname Login */}
+        <form onSubmit={(e) => { e.preventDefault(); void handleEmailAuth("sign-in"); }} className="mt-5 pt-4 border-t border-[var(--color-line)] space-y-2">
+          <input type="email" required value={authEmail} onChange={(e) => setAuthEmail(e.target.value)} placeholder="Email" className="w-full rounded-[var(--radius)] border border-[var(--color-line-bright)] bg-[var(--color-canvas)] px-3 py-2 text-xs text-[var(--color-text)] outline-none" />
+          <input type="password" required minLength={8} value={authPassword} onChange={(e) => setAuthPassword(e.target.value)} placeholder="Password (8+ characters)" className="w-full rounded-[var(--radius)] border border-[var(--color-line-bright)] bg-[var(--color-canvas)] px-3 py-2 text-xs text-[var(--color-text)] outline-none" />
+          <div className="flex gap-2">
+            <button type="submit" disabled={authPending} className="flex-1 py-2 rounded-[var(--radius)] bg-[var(--color-brass)] text-xs font-semibold text-[#0b0e0d] disabled:opacity-40">{authPending ? "Working…" : "Sign in"}</button>
+            <button type="button" disabled={authPending} onClick={() => void handleEmailAuth("sign-up")} className="flex-1 py-2 rounded-[var(--radius)] border border-[var(--color-line-bright)] text-xs font-semibold text-[var(--color-text)] disabled:opacity-40">Create account</button>
+          </div>
+          {authError && <p role="alert" className="text-xs text-[var(--color-debit)]">{authError}</p>}
+        </form>
         <form onSubmit={handleCustomLogin} className="mt-5 pt-4 border-t border-[var(--color-line)] flex gap-2">
           <input
             value={customName}

@@ -24,9 +24,8 @@ export default function GroupsPage() {
     splitops: true,
   });
 
-  // Groups created while the backend is unreachable live on this device.
+  // Keep locally-created groups visible for offline-first browsing.
   const [localGroups, setLocalGroups] = useState<LocalGroup[]>([]);
-  const [offlineNote, setOfflineNote] = useState(false);
 
   // Load favorites + on-device groups from localStorage
   useEffect(() => {
@@ -68,26 +67,7 @@ export default function GroupsPage() {
       api("/groups", { method: "POST", body: JSON.stringify({ name: groupName, defaultCurrency: "INR" }) }),
     onSuccess: () => {
       setName("");
-      setOfflineNote(false);
       void queryClient.invalidateQueries({ queryKey: ["groups"] });
-    },
-    onError: () => {
-      // Backend unreachable (public link / offline / no session): persist the
-      // group on this device instead of surfacing a NetworkError.
-      const trimmed = name.trim();
-      if (!trimmed) return;
-      const entry: LocalGroup = { id: `local-${Date.now()}`, name: trimmed, defaultCurrency: "INR" };
-      setLocalGroups((prev) => {
-        const next = [entry, ...prev];
-        try {
-          localStorage.setItem("ggsplitops_custom_groups", JSON.stringify(next));
-        } catch {
-          // Ignore storage errors
-        }
-        return next;
-      });
-      setName("");
-      setOfflineNote(true);
     },
   });
 
@@ -216,14 +196,9 @@ export default function GroupsPage() {
             </button>
           </form>
 
-          {createGroup.error && !offlineNote && (
+          {createGroup.error && (
             <p role="alert" data-testid="create-group-error" className="text-[var(--color-debit)] mt-2.5 text-xs">
-              {(createGroup.error as Error).message}
-            </p>
-          )}
-          {offlineNote && (
-            <p data-testid="offline-note" className="text-[var(--color-brass)] mt-2.5 text-xs">
-              Backend unreachable — group saved on this device and listed below.
+              {(createGroup.error as Error).message || "Sign in before creating a shared group."}
             </p>
           )}
         </section>

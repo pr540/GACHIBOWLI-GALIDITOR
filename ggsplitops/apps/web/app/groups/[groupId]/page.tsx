@@ -15,7 +15,7 @@ import {
   getGroup,
   recordSettlement,
 } from "../../../lib/api";
-import { exportGroupToExcel, type ExportExpense } from "../../../lib/excel-export";
+import { exportGroupToExcel, exportGroupToJson, type ExportExpense } from "../../../lib/excel-export";
 import { useActiveUser } from "../../../lib/user-context";
 
 // 15 Default Seed Members for SplitOps
@@ -275,6 +275,15 @@ export default function GroupPage({ params }: { params: Promise<{ groupId: strin
     });
   };
 
+  const handleExportJson = () => {
+    exportGroupToJson({ groupId, groupName, currency: "INR", members, expenses: filteredExpenses }, `${groupName.replace(/[^a-z0-9]+/gi, "-").toLowerCase()}.json`);
+  };
+
+  const handleWhatsAppShare = () => {
+    const text = `SplitOps group: ${groupName}\nMembers: ${members.map((member) => member.displayName).join(", ")}\nOpen the ledger: ${window.location.href}`;
+    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank", "noopener,noreferrer");
+  };
+
   return (
     <main className="mx-auto max-w-2xl px-4 py-6 sm:px-6 md:py-10">
       {/* Top Header */}
@@ -317,6 +326,9 @@ export default function GroupPage({ params }: { params: Promise<{ groupId: strin
             </svg>
             <span className="hidden sm:inline">Excel</span>
           </button>
+
+          <button type="button" onClick={handleExportJson} title="Download group data as JSON" className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-[var(--radius)] bg-[var(--color-surface-raised)] border border-[var(--color-line)] text-xs font-medium text-[var(--color-text)]">JSON</button>
+          <button type="button" onClick={handleWhatsAppShare} title="Share group on WhatsApp" className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-[var(--radius)] bg-[var(--color-surface-raised)] border border-[var(--color-line)] text-xs font-medium text-[var(--color-text)]">WhatsApp</button>
 
           <ThemeToggle />
         </div>

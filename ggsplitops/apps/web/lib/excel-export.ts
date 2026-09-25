@@ -236,6 +236,15 @@ export function exportGroupToExcel({
   URL.revokeObjectURL(url);
 }
 
+export function exportGroupToJson(data: unknown, filename: string) {
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = filename;
+  link.click();
+  URL.revokeObjectURL(link.href);
+}
+
 function escapeXml(str: string): string {
   return str
     .replace(/&/g, "&amp;")

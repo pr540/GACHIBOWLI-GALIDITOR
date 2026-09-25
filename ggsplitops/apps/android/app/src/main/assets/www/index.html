@@ -223,9 +223,9 @@
         <label>Split Method</label>
         <select class="input-field" id="expSplitMethod" data-testid="apk-exp-split">
           <option value="EQUAL">Equal Split</option>
-          <option value="EXACT">Exact Rupee Split</option>
-          <option value="PERCENTAGE">Percentage Split</option>
-          <option value="SHARES">Shares Split</option>
+          <option value="EXACT">Exact Amount</option>
+          <option value="PERCENTAGE">Percentage</option>
+          <option value="SHARES">Shares</option>
         </select>
       </div>
       <div class="input-row"><label>Paid By</label><select class="input-field" id="expPaidBy" data-testid="apk-exp-payer"></select></div>
@@ -274,6 +274,9 @@
     }
     function esc(s) {
       return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+    }
+    function splitLabel(m) {
+      return { EQUAL: "Equal Split", EXACT: "Exact Amount", PERCENTAGE: "Percentage", SHARES: "Shares" }[m] || m || "Equal Split";
     }
     function fmtDate(d) {
       var months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
@@ -447,10 +450,10 @@
           return '<div class="exp-item" data-testid="apk-expense-' + e.id + '">' +
             '<div class="exp-top"><div class="exp-left"><div class="exp-icon">🧾</div>' +
             '<div><div class="exp-title">' + esc(e.desc) + t + '</div>' +
-            '<div class="exp-meta">Paid by ' + esc(e.payerName) + ' · ' + esc(e.date) + ' · ' + esc(e.splitMethod) + '</div></div></div>' +
+            '<div class="exp-meta">Paid by ' + esc(e.payerName) + ' · ' + esc(e.date) + ' · ' + esc(splitLabel(e.splitMethod)) + '</div></div></div>' +
             '<div class="exp-amt">₹ ' + Number(e.amount).toFixed(2) + '</div></div>' +
             '<div class="exp-sub"><span>Last edited by ' + esc(e.editedBy) + ' at ' + esc(e.editedAt) + '</span>' +
-            '<span class="exp-actions"><button class="link-btn" onclick="deleteExpense(\'' + e.id + '\')">✕ Delete</button></span></div>' +
+            '<span class="exp-actions"><button class="link-btn" onclick="editExpense(\'' + e.id + '\')">✎ Edit</button><button class="link-btn" onclick="deleteExpense(\'' + e.id + '\')">✕ Delete</button></span></div>' +
             '</div>';
         }).join("");
       }
@@ -523,9 +526,45 @@
       row.innerText = "Bill ₹" + base.toFixed(2) + " + " + (mode === "CAB" ? "Cab" : "Bike") + " ₹" + fare.toFixed(2) + " = ₹" + total.toFixed(2);
     }
 
+    var editingId = null;
+
+    function setModalTitle(t) {
+      document.querySelector("#expenseModal .modal-title span").innerText = t;
+    }
+
+    function resetExpenseForm() {
+      document.getElementById("expDesc").value = "";
+      document.getElementById("expAmount").value = "";
+      document.getElementById("expFare").value = "";
+      document.getElementById("expSplitMethod").value = "EQUAL";
+      var none = document.querySelector('input[name="tmode"][value="NONE"]');
+      if (none) none.checked = true;
+    }
+
     function openExpenseModal() {
+      editingId = null;
+      setModalTitle("Add Split Expense");
+      resetExpenseForm();
       document.getElementById("expenseModal").classList.add("active");
       transportChanged();
+    }
+
+    function editExpense(id) {
+      var e = getExpenses().filter(function (x) { return x.id === id; })[0];
+      if (!e) return;
+      editingId = id;
+      setModalTitle("Edit Split Expense");
+      document.getElementById("expDesc").value = e.desc || "";
+      document.getElementById("expAmount").value = e.amount || "";
+      document.getElementById("expSplitMethod").value = e.splitMethod || "EQUAL";
+      document.getElementById("expPaidBy").value = e.payerId || "";
+      var mode = (e.transport && e.transport.mode) ? e.transport.mode : "NONE";
+      var radio = document.querySelector('input[name="tmode"][value="' + mode + '"]');
+      if (radio) radio.checked = true;
+      document.getElementById("expFare").value = (e.transport && e.transport.fare) ? e.transport.fare : "";
+      document.getElementById("expenseModal").classList.add("active");
+      transportChanged();
+      if (e.transport && e.transport.fare) fareChanged();
     }
     function closeModal() { document.getElementById("expenseModal").classList.remove("active"); }
 
@@ -539,8 +578,8 @@
       if (total <= 0) { alert("Please enter a valid amount greater than ₹0"); return; }
       var now = new Date();
       var list = getExpenses();
-      list.unshift({
-        id: "exp-" + Date.now(),
+      var entry = {
+        id: editingId || ("exp-" + Date.now()),
         desc: desc,
         amount: total.toFixed(2),
         transport: mode === "NONE" ? null : { mode: mode, fare: fare.toFixed(2) },
@@ -551,12 +590,16 @@
         day: dayKey(now),
         editedBy: currentUser ? currentUser.name : "Member",
         editedAt: now.toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" })
-      });
+      };
+      if (editingId) {
+        list = list.map(function (x) { return x.id === editingId ? entry : x; });
+      } else {
+        list.unshift(entry);
+      }
+      editingId = null;
       setExpenses(list);
       closeModal();
-      document.getElementById("expDesc").value = "";
-      document.getElementById("expAmount").value = "";
-      document.getElementById("expFare").value = "";
+      resetExpenseForm();
       updateUI();
     }
 

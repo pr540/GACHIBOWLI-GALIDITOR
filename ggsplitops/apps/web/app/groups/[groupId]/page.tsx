@@ -637,7 +637,14 @@ export default function GroupPage({ params }: { params: Promise<{ groupId: strin
                 })
               : "Today";
 
-            const splitBadge = e.splitMethod || "EQUAL";
+            const splitMethod = e.splitMethod || "EQUAL";
+            const splitLabel: Record<string, string> = {
+              EQUAL: "Equal Split",
+              EXACT: "Exact Amount",
+              PERCENTAGE: "Percentage",
+              SHARES: "Shares",
+            };
+            const splitBadge = splitLabel[splitMethod] || splitMethod;
 
             return (
               <div key={e.id} className="py-3.5 space-y-1.5 hover:bg-[var(--color-surface)]/50 -mx-2 px-2 rounded-[var(--radius)] transition-colors">
@@ -681,9 +688,10 @@ export default function GroupPage({ params }: { params: Promise<{ groupId: strin
                         setIsExpenseModalOpen(true);
                       }}
                       title="Edit expense (available to all members)"
-                      className="text-xs text-[var(--color-muted)] hover:text-[var(--color-brass)] p-1.5 rounded hover:bg-[var(--color-surface-raised)]"
+                      data-testid={`expense-edit-${e.id}`}
+                      className="text-xs font-semibold text-[var(--color-muted)] hover:text-[var(--color-brass)] px-2 py-1 rounded border border-[var(--color-line)] hover:border-[var(--color-brass)] transition-colors"
                     >
-                      ✎
+                      ✎ Edit
                     </button>
                     <button
                       onClick={() => setDeleteExpenseTarget(e)}
@@ -698,7 +706,7 @@ export default function GroupPage({ params }: { params: Promise<{ groupId: strin
                 <div className="flex flex-wrap items-center justify-between text-xs text-[var(--color-faint)] gap-1 pt-0.5">
                   <span>
                     Split among {partCount} participants ·{" "}
-                    {splitBadge === "EQUAL" ? `1/${partCount} each (₹${(parseFloat(e.amount) / partCount).toFixed(2)})` : "Custom split shares"}
+                    {splitMethod === "EQUAL" ? `1/${partCount} each (₹${(parseFloat(e.amount) / partCount).toFixed(2)})` : "Custom split shares"}
                   </span>
                   {/* User requirement: Show "last edited by <name> at <time>" on every expense */}
                   <span suppressHydrationWarning className="text-[11px] text-[var(--color-brass)]/80 font-mono">

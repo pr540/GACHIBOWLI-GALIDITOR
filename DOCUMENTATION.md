@@ -48,7 +48,7 @@ GACHIBOWLI-GALIDITOR/                 # GitHub repo root (this is what Vercel se
 ├── DOCUMENTATION.md                  # This file
 ├── ggsplitops.apk                    # Installable APK (mirrors in-repo build)
 ├── ggsplitops-v1.1.0.apk / -v1.2.0.apk  # Versioned tester files
-└── ggsplitops/                       # pnpm monorepo root (Vercel Root Directory)
+└── ggsplitops/                       # pnpm monorepo root
     ├── apps/web/                     # Next.js 16 UI (:3000)
     │   ├── app/ (page, login, groups, groups/[groupId], globals.css)
     │   ├── components/ (amount, edit-expense-modal, member-manager-modal,
@@ -138,7 +138,7 @@ pnpm --filter @splitbills/core test   # 30 money-engine tests, fast, no DB
 
 - **API died?** (`curl :3001/api/health` fails): `setsid nohup pnpm --filter @splitbills/api dev > /tmp/opencode/api.log 2>&1 < /dev/null &` (plain `&` gets reaped — use `setsid`).
 - **Web stale after edits?** No volume mounts — `docker compose build web && docker compose up -d web`.
-- **Public tester link?** `cloudflared tunnel --url http://localhost:3000` (quick tunnels **expire** — old links die; laptop must stay on). For permanence, use Vercel (Root Directory = `ggsplitops`).
+- **Public tester link?** `cloudflared tunnel --url http://localhost:3000` (quick tunnels **expire** — old links die; laptop must stay on). For permanence, use Vercel with Root Directory = `ggsplitops/apps/web`.
 - **APK rebuild?** `cd apps/android && bash build-apk.sh`, verify (`apksigner verify`, `apkanalyzer manifest …`), copy to repo root + versioned filename. Bump `versionCode/versionName` in **both** `build-apk.sh` and `app/build.gradle`. Debug keystore: `apps/android/debug.keystore` (keep it — updates must reuse the same key).
 - **Push?** `git add -A && git commit -m "…" && git push origin main` (SSH key must be registered on GitHub; see Troubleshooting).
 
@@ -191,7 +191,7 @@ Latest full pass: lint 0 errors, typecheck clean, 30/30 tests, prod build OK, AP
 
 - **v1.2.0 (code 3)** — current APK: online+offline bundle (Google sign-in, all 15 members, 4 group ledgers, cab/bike fare, balances, calendar filter, 23 testids). Files: `ggsplitops-v1.2.0.apk`, `ggsplitops.apk`, `ggsplitops/ggsplitops.apk` (identical).
 - **v1.1.0 (code 2)** — install-fix release (sdk flags, icons, manifest, signing). File: `ggsplitops-v1.1.0.apk`.
-- Web: same feature set + offline-first groups + Tosca hooks, deployed via Docker; public links via Cloudflare tunnel; Vercel needs Root Directory = `ggsplitops`.
+- Web: same feature set + offline-first groups + Tosca hooks, deployed via Docker; public links via Cloudflare tunnel; Vercel needs Root Directory = `ggsplitops/apps/web`.
 - Full prompt-by-prompt history: `PROMPTS.md` (Prompts 1–12).
 
 ## 13. Glossary for KT

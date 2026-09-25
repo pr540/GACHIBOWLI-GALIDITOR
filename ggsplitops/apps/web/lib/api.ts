@@ -101,3 +101,6 @@ export const createExpense = (groupId: string, body: unknown) =>
 
 export const recordSettlement = (groupId: string, body: unknown) =>
   api(`/groups/${groupId}/settlements`, { method: "POST", body: JSON.stringify(body) });
+
+export const deleteGroup = (groupId: string) =>
+  api<void>(`/groups/${groupId}`, { method: "DELETE" });

@@ -202,4 +202,18 @@ export const groupRoutes = new Hono<AppEnv>()
 
       return c.json({ member }, 201);
     },
-  );
+  )
+
+  .delete("/:groupId", async (c) => {
+    const user = currentUser(c);
+    const groupId = c.req.param("groupId");
+    const membership = await requireMembership(groupId, user.id, "OWNER");
+    if (membership.role !== "OWNER") throw notFound("Group");
+
+    await db
+      .update(groups)
+      .set({ deletedAt: new Date(), updatedAt: new Date() })
+      .where(and(eq(groups.id, groupId), isNull(groups.deletedAt)));
+
+    return c.body(null, 204);
+  });

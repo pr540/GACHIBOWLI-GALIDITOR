@@ -10,6 +10,7 @@ import { MemberManagerModal, type ManagedMember } from "../../../components/memb
 import { MonthDashboard } from "../../../components/month-dashboard";
 import { ThemeToggle } from "../../../components/theme-toggle";
 import {
+  deleteGroup,
   getBalances,
   getExpenses,
   getGroup,
@@ -275,6 +276,16 @@ export default function GroupPage({ params }: { params: Promise<{ groupId: strin
     });
   };
 
+  const handleDeleteGroup = async () => {
+    if (!window.confirm(`Delete “${groupName}” and remove it for all members?`)) return;
+    try {
+      await deleteGroup(groupId);
+      window.location.assign("/groups");
+    } catch (error) {
+      window.alert(error instanceof Error ? error.message : "Unable to delete this group.");
+    }
+  };
+
   const handleExportJson = () => {
     exportGroupToJson({ groupId, groupName, currency: "INR", members, expenses: filteredExpenses }, `${groupName.replace(/[^a-z0-9]+/gi, "-").toLowerCase()}.json`);
   };
@@ -329,6 +340,8 @@ export default function GroupPage({ params }: { params: Promise<{ groupId: strin
 
           <button type="button" onClick={handleExportJson} title="Download group data as JSON" className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-[var(--radius)] bg-[var(--color-surface-raised)] border border-[var(--color-line)] text-xs font-medium text-[var(--color-text)]">JSON</button>
           <button type="button" onClick={handleWhatsAppShare} title="Share group on WhatsApp" className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-[var(--radius)] bg-[var(--color-surface-raised)] border border-[var(--color-line)] text-xs font-medium text-[var(--color-text)]">WhatsApp</button>
+
+          <button type="button" onClick={handleDeleteGroup} title="Delete this group for all members" className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-[var(--radius)] border border-[var(--color-debit)]/40 text-xs font-medium text-[var(--color-debit)] hover:bg-[var(--color-debit)]/10">Delete group</button>
 
           <ThemeToggle />
         </div>

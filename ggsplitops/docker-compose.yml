@@ -66,6 +66,31 @@ services:
       - NODE_ENV=production
       - NEXT_PUBLIC_API_URL=http://localhost:3001
     depends_on:
+      api:
+        condition: service_healthy
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=production
+      - API_PORT=3001
+      - DATABASE_URL=postgresql://splitbills:splitbills@postgres:5432/splitbills
+      - REDIS_URL=redis://redis:6379
+      - BETTER_AUTH_SECRET=splitbills-docker-development-secret-change-me
+      - BETTER_AUTH_URL=http://localhost:3001
+      - WEB_ORIGIN=http://localhost:3000
+      - FX_API_URL=http://frankfurter:8080/v1
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3001/api/health').then((r) => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+    depends_on:
       postgres:
         condition: service_healthy
       redis:

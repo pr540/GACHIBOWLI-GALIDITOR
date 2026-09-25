@@ -67,22 +67,16 @@ export default function LoginPage() {
     router.push("/groups");
   };
 
-  const handleGoogleSignIn = (emailOrName?: string) => {
+  const handleGoogleSignIn = async () => {
     setIsGoogleSigningIn(true);
-    setTimeout(() => {
-      const rawName = emailOrName?.trim() || googleEmail.trim() || "Praneeth (Google)";
-      const cleanName = rawName.includes("@") ? rawName.split("@")[0] || rawName : rawName;
-      const googleUser: ActiveUser = {
-        id: `google-${Date.now()}`,
-        name: cleanName || "Google User",
-        role: "MEMBER",
-        tag: "Google",
-      };
-      switchUser(googleUser);
+    const result = await signIn.social({
+      provider: "google",
+      callbackURL: `${window.location.origin}/groups`,
+    });
+    if (result.error) {
       setIsGoogleSigningIn(false);
       setShowGoogleModal(false);
-      router.push("/groups");
-    }, 500);
+    }
   };
 
   const handleCustomLogin = (e: React.FormEvent) => {
@@ -140,7 +134,7 @@ export default function LoginPage() {
         {/* 1. High-Visibility Google Sign-In Button */}
         <div className="mt-6">
           <button
-            onClick={() => setShowGoogleModal(true)}
+            onClick={() => void handleGoogleSignIn()}
             type="button"
             disabled={isGoogleSigningIn}
             data-testid="login-google"
@@ -299,7 +293,7 @@ export default function LoginPage() {
 
             <div className="space-y-2">
               <button
-                onClick={() => handleGoogleSignIn("praneethssr.2002@gmail.com")}
+                onClick={() => void handleGoogleSignIn()}
                 className="w-full p-3 rounded-[var(--radius)] border border-[var(--color-line)] hover:border-[var(--color-brass)] bg-[var(--color-surface-raised)] text-left text-xs flex items-center justify-between transition-colors cursor-pointer"
               >
                 <div className="flex items-center gap-2.5">
@@ -322,7 +316,7 @@ export default function LoginPage() {
                   className="w-full rounded-[var(--radius)] border border-[var(--color-line-bright)] bg-[var(--color-canvas)] px-3 py-2 text-xs text-[var(--color-text)] outline-none transition-colors focus:border-[var(--color-brass)]"
                 />
                 <button
-                  onClick={() => handleGoogleSignIn(googleEmail)}
+                  onClick={() => void handleGoogleSignIn()}
                   disabled={!googleEmail.trim()}
                   className="w-full mt-2 py-2 rounded-[var(--radius)] bg-[var(--color-brass)] text-xs font-semibold text-[#0b0e0d] transition-opacity hover:opacity-90 disabled:opacity-40 cursor-pointer"
                 >

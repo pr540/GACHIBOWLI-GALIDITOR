@@ -6,7 +6,7 @@
   "license": "MIT",
   "packageManager": "pnpm@10.15.0",
   "engines": {
-    "node": "22.x"
+    "node": "24.x"
   },
   "scripts": {
     "dev": "turbo run dev",

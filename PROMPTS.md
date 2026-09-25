@@ -280,3 +280,18 @@ documentation convert into pdf
 ```
 **Actions Taken:**
 - Converted `DOCUMENTATION.md` to `DOCUMENTATION.pdf` (A4, 8 pages, 290 KB) using a stdlib-only Markdown→HTML script plus headless Chrome `--print-to-pdf` (no pandoc/office suite on the machine), and pushed it to main.
+
+---
+
+## Prompt 18
+**User Request:**
+```text
+Bug Fix, Automation Testing, Deployment & Release Validation (Bug 1: Edit option missing after splitting; Bug 2: improve second screen / split labels; Bug 3: name correction Sameena Slutan → Sameena Sultan). Must reflect in v1.2.0 APK/bundle, website also change, fastly do it.
+```
+**Actions Taken:**
+- **Bug 3 (name)** — changed `Sameena Sultana` → `Sameena Sultan` in all 4 source files (`packages/db/src/seed.ts`, `apps/web/app/login/page.tsx`, `apps/web/app/groups/[groupId]/page.tsx`, `apps/android/.../assets/www/index.html`) and verified the corrected spelling inside the built APK bundle.
+- **Bug 1 (Edit option)** — investigated the expense flow. Web already had a subtle `✎` icon; made it an explicit `✎ Edit` button (`data-testid="expense-edit-<id>"`). Identified the offline APK bundle had **no Edit at all**, so added `editExpense(id)` + form pre-fill + update-in-place in `saveExpense()`, plus an `✎ Edit` button beside Delete.
+- **Bug 2 (split labels)** — raw `EQUAL/EXACT/PERCENTAGE/SHARES` badges were cryptic. Added a `splitLabel()` map (`Equal Split`, `Exact Amount`, `Percentage`, `Shares`) applied to the web expense badge and the offline bundle's expense meta + modal dropdown.
+- **Verification** — `node --check` on the extracted bundle script (clean); web `tsc --noEmit` clean; 30/30 core tests pass; production `next build` ok; APK rebuilt as **v1.2.0 (versionCode 3)**, `apksigner verify` OK, bundle grep confirms `Sameena Sultan`, `✎ Edit`, `editExpense`, and the four friendly split labels. All APK copies identical (md5 `9f829ba0…`).
+- **Online** — rebuilt Docker web image, restarted `splitbills-web-1`, exposed via fresh Cloudflare tunnel.
+- **Note on scope** — screenshots could not be read (no image input); bugs interpreted from the user's text description. No TO-SAC framework exists in the repo (only `packages/core` node:test suite), so TO-SAC automation could not be executed as specified. Vercel deployment remained at platform `NOT_FOUND` (unresolved, needs build logs).

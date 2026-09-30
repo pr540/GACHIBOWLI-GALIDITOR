@@ -35,31 +35,6 @@ const MEMBERS_LIST: ActiveUser[] = [
   makeMember("mem-prakash", "Prakash", "MEMBER", "prakash@splitops.in"),
 ];
 
-const buildLocalProfile = (source: string, fallbackName = "Google User"): ActiveUser => {
-  const email = source.trim();
-  const localPart = email.includes("@") ? email.split("@")[0] : "";
-  const rawName = localPart?.trim() || fallbackName;
-  const displayName = rawName
-    .replace(/[._-]+/g, " ")
-    .replace(/\s+/g, " ")
-    .trim() || fallbackName;
-  const safeEmail = email || `${displayName.toLowerCase().replace(/\s+/g, ".")}@splitops.local`;
-  const finalUser: ActiveUser = {
-    id: `mem-local-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
-    name: displayName,
-    role: "MEMBER",
-    email: safeEmail,
-    tag: "Local Profile",
-    avatarUrl: getAvatarUrl({
-      id: `mem-local-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
-      name: displayName,
-      email: safeEmail,
-    }),
-  };
-
-  return finalUser;
-};
-
 export default function LoginPage() {
   const router = useRouter();
   const { currentUser, switchUser } = useActiveUser();
@@ -116,30 +91,16 @@ export default function LoginPage() {
     router.push("/groups");
   };
 
-  const handleGoogleContinue = () => {
-    const email = googleEmail.trim();
+  const handleGoogleSignIn = async (emailInput = googleEmail) => {
+    const email = emailInput.trim();
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      setAuthError("Please enter a valid email before continuing.");
+      setAuthError("Please enter a valid Google email to continue.");
       return;
     }
 
-    const profileUser = buildLocalProfile(email, "Google User");
-    switchUser(profileUser);
-    setShowGoogleModal(false);
     setAuthError("");
-    router.push("/groups");
-  };
-
-  const handleGoogleSignIn = async () => {
     setIsGoogleSigningIn(true);
     try {
-      const email = googleEmail.trim();
-      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        setIsGoogleSigningIn(false);
-        setAuthError("Please enter a valid Google email to continue.");
-        return;
-      }
-
       const result = await signIn.social({
         provider: "google",
         callbackURL: `${window.location.origin}/groups`,
@@ -147,10 +108,7 @@ export default function LoginPage() {
       });
 
       if (result?.error) {
-        const profileUser = buildLocalProfile(email, "Google User");
-        switchUser(profileUser);
-        setShowGoogleModal(false);
-        router.push("/groups");
+        setAuthError(result.error.message ?? "Google sign-in failed. Please try again.");
         return;
       }
 
@@ -164,15 +122,9 @@ export default function LoginPage() {
         return;
       }
 
-      const profileUser = buildLocalProfile(email, "Google User");
-      switchUser(profileUser);
-      setShowGoogleModal(false);
-      router.push("/groups");
+      setAuthError("Google sign-in did not start. Check the authentication service and try again.");
     } catch (error) {
-      const profileUser = buildLocalProfile(googleEmail.trim() || "google-user@splitops.local", "Google User");
-      switchUser(profileUser);
-      setShowGoogleModal(false);
-      router.push("/groups");
+      setAuthError(error instanceof Error ? error.message : "Google sign-in failed. Please try again.");
     } finally {
       setIsGoogleSigningIn(false);
     }
@@ -407,12 +359,14 @@ export default function LoginPage() {
             <p className="text-xs text-[var(--color-muted)]">
               Choose an account to continue to <strong>SplitOps</strong>:
             </p>
+            {authError && <p role="alert" className="text-xs text-[var(--color-debit)]">{authError}</p>}
 
             <div className="space-y-2">
               <button
                 onClick={() => {
-                  setGoogleEmail("praneethssr.2002@gmail.com");
-                  handleGoogleContinue();
+                  const email = "praneethssr.2002@gmail.com";
+                  setGoogleEmail(email);
+                  void handleGoogleSignIn(email);
                 }}
                 className="w-full p-3 rounded-[var(--radius)] border border-[var(--color-line)] hover:border-[var(--color-brass)] bg-[var(--color-surface-raised)] text-left text-xs flex items-center justify-between transition-colors cursor-pointer"
               >
@@ -437,11 +391,11 @@ export default function LoginPage() {
                   className="w-full rounded-[var(--radius)] border border-[var(--color-line-bright)] bg-[var(--color-canvas)] px-3 py-2 text-xs text-[var(--color-text)] outline-none transition-colors focus:border-[var(--color-brass)]"
                 />
                 <button
-                  onClick={() => handleGoogleContinue()}
-                  disabled={!googleEmail.trim()}
+                  onClick={() => void handleGoogleSignIn()}
+                  disabled={!googleEmail.trim() || isGoogleSigningIn}
                   className="w-full mt-2 py-2 rounded-[var(--radius)] bg-[var(--color-brass)] text-xs font-semibold text-[#0b0e0d] transition-opacity hover:opacity-90 disabled:opacity-40 cursor-pointer"
                 >
-                  Continue with this Email
+                  {isGoogleSigningIn ? "Opening Google sign-in…" : "Continue with Google"}
                 </button>
               </div>
             </div>

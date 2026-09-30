@@ -3,6 +3,7 @@ import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 
 import { env, features } from "./env.ts";
+import { sendEmail } from "./lib/email.ts";
 
 /**
  * Better Auth owns sessions, OAuth, and password hashing. We keep our own
@@ -19,9 +20,18 @@ export const auth = betterAuth({
 
   emailAndPassword: {
     enabled: true,
-    // Requiring verification with no mail transport configured would lock a
-    // self-hoster out of their own instance on first run.
     requireEmailVerification: features.email,
+  },
+
+  emailVerification: {
+    sendOnSignUp: true,
+    sendVerificationEmail: async ({ user, url }) => {
+      await sendEmail({
+        to: user.email,
+        subject: "Verify your SplitOps email",
+        text: `Hi ${user.name},\n\nVerify your email address to finish creating your account:\n${url}\n\nIf you did not create this account, you can ignore this message.`,
+      });
+    },
   },
 
   socialProviders: {

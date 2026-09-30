@@ -194,6 +194,47 @@ Latest full pass: lint 0 errors, typecheck clean, 30/30 tests, prod build OK, AP
 - Web: same feature set + offline-first groups + Tosca hooks, deployed via Docker; public links via Cloudflare tunnel; Vercel needs Root Directory = `ggsplitops/apps/web`.
 - Full prompt-by-prompt history: `PROMPTS.md` (Prompts 1–12).
 
-## 13. Glossary for KT
+## 13. Current status as of 2026-09-30
+
+The project is now in a working, tester-ready state across web and Expo mobile layers.
+
+### 13.1 Verified working state
+
+- Web app is live on `http://localhost:3000` and returns `HTTP/1.1 200 OK`.
+- Expo Go server is running and reachable via `exp://192.168.1.7:8081`.
+- Expo app typecheck passes with `pnpm --filter @splitbills/expo typecheck`.
+- Web security headers are enabled (`X-Content-Type-Options`, `X-Frame-Options: DENY`, strict `Referrer-Policy`, restricted `Permissions-Policy`).
+- Group creation has an offline fallback path when the public API is unreachable.
+- Transport costs (Cab/Bike) are merged into the final balance calculation and saved with the expense.
+- UI automation hooks used for Tosca are in place for login, groups, expense modal, and transport controls.
+
+### 13.2 Latest feature additions
+
+- **Expo Go integration**: the mobile app is a lightweight React Native shell that loads the running web app over LAN.
+- **Offline-first flows**: create-group failure on public link does not crash; the app stores the group locally and renders it as an offline group card.
+- **Cab/Bike transport charges**: radio options for transport are now part of the expense record and included in the total amount before split calculation.
+- **Security hardening**: protected headers, auth-required API routes, and `.env`/secret hygiene remain enforced.
+- **QA readiness**: a set of smoke tests and app regression checks were added to the project knowledge base for testers.
+
+### 13.3 Current tester checklist
+
+1. Open Expo Go and scan the QR code for the running app.
+2. Verify the app loads the SplitOps web shell without a blank page.
+3. Navigate to groups and create a group using valid data.
+4. Validate that empty or invalid values fail gracefully.
+5. Add an expense with a payer, amount, date, and split method.
+6. Select Cab or Bike and verify the fare is added to the expense total.
+7. Confirm every member receives the right split and totals stay consistent.
+8. Check that transport badges appear in history and dashboard cards.
+9. Test offline group creation and retry flows.
+10. Verify no crash occurs on network or session disruption.
+
+### 13.4 Known constraints
+
+- Public tunnel URLs can expire; a fresh link may be required for repeated external testing.
+- The web app and API should be kept running for Expo LAN mode to work reliably.
+- Production secrets must still be rotated and managed through environment variables before deployment beyond the local/test environment.
+
+## 14. Glossary for KT
 
 - **SplitOps** = the primary group/workspace ("Our GG Group"). **Curated groups** = 3 static demo groups. **On-device groups** = created while backend unreachable. **Paisa-accurate** = exact 2-decimal math. **Tosca** = UI automation tool driven via `data-testid`. **Quick tunnel** = temporary public URL (expires). **Offline-first** = UI works from localStorage, syncs when backend reachable.

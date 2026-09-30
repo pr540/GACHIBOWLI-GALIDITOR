@@ -38,10 +38,12 @@ export default function LoginPage() {
   const [authEmail, setAuthEmail] = useState("");
   const [authPassword, setAuthPassword] = useState("");
   const [authError, setAuthError] = useState("");
+  const [authMessage, setAuthMessage] = useState("");
   const [authPending, setAuthPending] = useState(false);
 
   const handleEmailAuth = async (mode: "sign-in" | "sign-up") => {
     setAuthError("");
+    setAuthMessage("");
     setAuthPending(true);
     const finish = (result: { error?: { message?: string } | null }) => {
       setAuthPending(false);
@@ -52,10 +54,23 @@ export default function LoginPage() {
       router.push("/groups");
     };
     try {
-      const result = mode === "sign-up"
-        ? await signUp.email({ email: authEmail, password: authPassword, name: authEmail.split("@")[0] || "SplitOps user" })
-        : await signIn.email({ email: authEmail, password: authPassword });
-      finish(result);
+      if (mode === "sign-up") {
+        const result = await signUp.email({
+          email: authEmail,
+          password: authPassword,
+          name: authEmail.split("@")[0] || "SplitOps user",
+        });
+        setAuthPending(false);
+        if (result.error) {
+          setAuthError(result.error.message ?? "Authentication failed.");
+        } else if (!result.data?.token) {
+          setAuthMessage("Check your inbox for a verification link before signing in.");
+        } else {
+          router.push("/groups");
+        }
+      } else {
+        finish(await signIn.email({ email: authEmail, password: authPassword }));
+      }
     } catch (error) {
       setAuthPending(false);
       setAuthError(error instanceof Error ? error.message : "Authentication failed.");
@@ -72,6 +87,7 @@ export default function LoginPage() {
     const result = await signIn.social({
       provider: "google",
       callbackURL: `${window.location.origin}/groups`,
+      loginHint: googleEmail.trim() || undefined,
     });
     if (result.error) {
       setIsGoogleSigningIn(false);
@@ -233,6 +249,7 @@ export default function LoginPage() {
             <button type="button" disabled={authPending} onClick={() => void handleEmailAuth("sign-up")} className="flex-1 py-2 rounded-[var(--radius)] border border-[var(--color-line-bright)] text-xs font-semibold text-[var(--color-text)] disabled:opacity-40">Create account</button>
           </div>
           {authError && <p role="alert" className="text-xs text-[var(--color-debit)]">{authError}</p>}
+          {authMessage && <p role="status" className="text-xs text-[var(--color-credit)]">{authMessage}</p>}
         </form>
         <form onSubmit={handleCustomLogin} className="mt-5 pt-4 border-t border-[var(--color-line)] flex gap-2">
           <input
@@ -310,6 +327,7 @@ export default function LoginPage() {
 
               <div className="pt-2">
                 <input
+                  type="email"
                   value={googleEmail}
                   onChange={(e) => setGoogleEmail(e.target.value)}
                   placeholder="Or enter any Google Email"

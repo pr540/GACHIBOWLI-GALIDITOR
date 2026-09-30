@@ -20,6 +20,7 @@
     "@splitbills/db": "workspace:*",
     "better-auth": "^1.5.0",
     "hono": "^4.7.10",
+    "nodemailer": "^10.0.13",
     "zod": "^3.25.7"
   },
   "devDependencies": {

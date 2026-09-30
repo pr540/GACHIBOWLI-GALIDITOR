@@ -7,12 +7,25 @@ export interface ActiveUser {
   name: string;
   role: string;
   tag?: string;
+  email?: string;
+  avatarUrl?: string;
+}
+
+export function getAvatarSeed(user: Pick<ActiveUser, "id" | "name" | "email">): string {
+  return user.email?.trim() || user.name.trim() || user.id;
+}
+
+export function getAvatarUrl(user: Pick<ActiveUser, "id" | "name" | "email">): string {
+  const seed = encodeURIComponent(getAvatarSeed(user));
+  return `https://api.dicebear.com/9.x/initials/svg?seed=${seed}&radius=50&backgroundColor=b6d7ff,ffdbac,f2c5d7,bbf7d0,c7d2fe&fontSize=42`;
 }
 
 export const DEFAULT_USER: ActiveUser = {
   id: "mem-zubair",
   name: "Zubair",
   role: "OWNER",
+  email: "zubair@splitops.in",
+  avatarUrl: getAvatarUrl({ id: "mem-zubair", name: "Zubair", email: "zubair@splitops.in" }),
 };
 
 interface UserContextValue {
@@ -39,7 +52,15 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
       if (saved) {
         const parsed = JSON.parse(saved);
         if (parsed && parsed.name) {
-          setCurrentUser(parsed);
+          setCurrentUser({
+            ...DEFAULT_USER,
+            ...parsed,
+            avatarUrl: parsed.avatarUrl ?? getAvatarUrl({
+              id: parsed.id ?? DEFAULT_USER.id,
+              name: parsed.name,
+              email: parsed.email ?? DEFAULT_USER.email ?? parsed.name,
+            }),
+          });
         }
       } else {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_USER));

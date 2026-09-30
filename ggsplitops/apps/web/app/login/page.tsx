@@ -5,26 +5,34 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { ThemeToggle } from "../../components/theme-toggle";
-import { useActiveUser, type ActiveUser } from "../../lib/user-context";
+import { getAvatarUrl, useActiveUser, type ActiveUser } from "../../lib/user-context";
 import { signIn, signUp } from "../../lib/auth-client";
+
+const makeMember = (id: string, name: string, role: string, email: string): ActiveUser => ({
+  id,
+  name,
+  role,
+  email,
+  avatarUrl: getAvatarUrl({ id, name, email }),
+});
 
 // 15 Default SplitOps Members
 const MEMBERS_LIST: ActiveUser[] = [
-  { id: "mem-zubair", name: "Zubair", role: "OWNER" },
-  { id: "mem-pranu", name: "Pranu", role: "MEMBER" },
-  { id: "mem-abhi", name: "Abhi Venkata Sai Samsani", role: "MEMBER" },
-  { id: "mem-pavan", name: "Pavan (Kasula Pavan Sai)", role: "MEMBER" },
-  { id: "mem-prasanth", name: "Prasanth", role: "MEMBER" },
-  { id: "mem-ajay", name: "Ajay", role: "MEMBER" },
-  { id: "mem-ajayk", name: "Ajay Kumar", role: "MEMBER" },
-  { id: "mem-dlip", name: "Dlip", role: "MEMBER" },
-  { id: "mem-mouni", name: "Mouni", role: "MEMBER" },
-  { id: "mem-sameena", name: "Sameena Sultan", role: "MEMBER" },
-  { id: "mem-tharun", name: "Tharun Reddy", role: "MEMBER" },
-  { id: "mem-uday", name: "Uday", role: "MEMBER" },
-  { id: "mem-devi", name: "Devi", role: "MEMBER" },
-  { id: "mem-hassi", name: "Hassi", role: "MEMBER" },
-  { id: "mem-prakash", name: "Prakash", role: "MEMBER" },
+  makeMember("mem-zubair", "Zubair", "OWNER", "zubair@splitops.in"),
+  makeMember("mem-pranu", "Pranu", "MEMBER", "pranu@splitops.in"),
+  makeMember("mem-abhi", "Abhi Venkata Sai Samsani", "MEMBER", "abhi@splitops.in"),
+  makeMember("mem-pavan", "Pavan (Kasula Pavan Sai)", "MEMBER", "pavan@splitops.in"),
+  makeMember("mem-prasanth", "Prasanth", "MEMBER", "prasanth@splitops.in"),
+  makeMember("mem-ajay", "Ajay", "MEMBER", "ajay@splitops.in"),
+  makeMember("mem-ajayk", "Ajay Kumar", "MEMBER", "ajaykumar@splitops.in"),
+  makeMember("mem-dlip", "Dlip", "MEMBER", "dlip@splitops.in"),
+  makeMember("mem-mouni", "Mouni", "MEMBER", "mouni@splitops.in"),
+  makeMember("mem-sameena", "Sameena Sultan", "MEMBER", "sameena@splitops.in"),
+  makeMember("mem-tharun", "Tharun Reddy", "MEMBER", "tharun@splitops.in"),
+  makeMember("mem-uday", "Uday", "MEMBER", "uday@splitops.in"),
+  makeMember("mem-devi", "Devi", "MEMBER", "devi@splitops.in"),
+  makeMember("mem-hassi", "Hassi", "MEMBER", "hassi@splitops.in"),
+  makeMember("mem-prakash", "Prakash", "MEMBER", "prakash@splitops.in"),
 ];
 
 export default function LoginPage() {
@@ -98,11 +106,18 @@ export default function LoginPage() {
   const handleCustomLogin = (e: React.FormEvent) => {
     e.preventDefault();
     if (!customName.trim()) return;
+    const guestName = customName.trim();
     const guestUser: ActiveUser = {
       id: `mem-guest-${Date.now()}`,
-      name: customName.trim(),
+      name: guestName,
       role: "MEMBER",
       tag: "Guest",
+      email: `${guestName.toLowerCase().replace(/[^a-z0-9]+/g, "").slice(0, 12) || "guest"}@random.splitops.dev`,
+      avatarUrl: getAvatarUrl({
+        id: `mem-guest-${Date.now()}`,
+        name: guestName,
+        email: `${guestName.toLowerCase().replace(/[^a-z0-9]+/g, "").slice(0, 12) || "guest"}@random.splitops.dev`,
+      }),
     };
     switchUser(guestUser);
     router.push("/groups");
@@ -221,13 +236,23 @@ export default function LoginPage() {
                 type="button"
                 onClick={() => handleSelectMember(member)}
                 data-testid={`login-member-${member.id}`}
-                className={`p-2.5 rounded-[var(--radius)] border text-left transition-all text-xs flex items-center justify-between cursor-pointer ${
+                className={`p-2.5 rounded-[var(--radius)] border text-left transition-all text-xs flex items-center justify-between gap-2 cursor-pointer ${
                   isSelected
                     ? "border-[var(--color-brass)] bg-[var(--color-surface-raised)] font-semibold text-[var(--color-brass)] ring-1 ring-[var(--color-brass)]"
                     : "border-[var(--color-line)] bg-[var(--color-surface-raised)] text-[var(--color-text)] hover:border-[var(--color-brass)]/70 hover:bg-[var(--color-surface)]"
                 }`}
               >
-                <span className="truncate font-medium">{member.name}</span>
+                <div className="flex items-center gap-2 min-w-0">
+                  <img
+                    src={member.avatarUrl ?? getAvatarUrl({ id: member.id, name: member.name, email: member.email ?? member.name })}
+                    alt={member.name}
+                    className="w-8 h-8 rounded-full object-cover border border-[var(--color-line-bright)] shrink-0"
+                  />
+                  <div className="min-w-0">
+                    <div className="truncate font-medium">{member.name}</div>
+                    {member.email && <div className="text-[10px] text-[var(--color-muted)] truncate">{member.email}</div>}
+                  </div>
+                </div>
                 {isOwner ? (
                   <span className="text-[9px] uppercase px-1.5 py-0.2 rounded bg-[var(--color-brass)] text-[#0b0e0d] font-bold shrink-0">
                     Owner

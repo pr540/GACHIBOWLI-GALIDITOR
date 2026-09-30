@@ -128,9 +128,16 @@ export default function GroupsPage() {
 
             <div className="flex items-center gap-3">
               {currentUser && (
-                <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/10 text-xs text-white/90 border border-white/15">
-                  <span>👤</span>
-                  <span className="font-medium">{currentUser.name}</span>
+                <div className="hidden sm:flex items-center gap-2 px-2.5 py-1 rounded-full bg-white/10 text-xs text-white/90 border border-white/15 backdrop-blur-sm">
+                  <img
+                    src={currentUser.avatarUrl ?? `https://api.dicebear.com/9.x/initials/svg?seed=${encodeURIComponent(currentUser.email ?? currentUser.name)}`}
+                    alt={currentUser.name}
+                    className="w-7 h-7 rounded-full border border-white/20 object-cover"
+                  />
+                  <div className="min-w-0">
+                    <div className="font-medium leading-none truncate max-w-[110px]">{currentUser.name}</div>
+                    {currentUser.email && <div className="text-[9px] text-white/70 truncate max-w-[110px]">{currentUser.email}</div>}
+                  </div>
                 </div>
               )}
               <Link
